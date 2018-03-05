@@ -193,7 +193,7 @@
     }];
     
     _moreFoodBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    [_moreFoodBtn setTitle:@"查看更多 >" forState:UIControlStateNormal];
+    [_moreFoodBtn setTitle:@"查看更多" forState:UIControlStateNormal];
     [_moreFoodBtn setTitleColor:RGB(75, 173, 96) forState:UIControlStateNormal];
     [_moreFoodBtn.titleLabel setFont:systemFont(15)];
     _moreFoodBtn.contentHorizontalAlignment =  UIControlContentVerticalAlignmentBottom;
@@ -243,7 +243,7 @@
     }];
     
     _moreRelaxBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    [_moreRelaxBtn setTitle:@"查看更多 >" forState:UIControlStateNormal];
+    [_moreRelaxBtn setTitle:@"查看更多" forState:UIControlStateNormal];
     
     [_moreRelaxBtn setTitleColor:RGB(84, 123, 199) forState:UIControlStateNormal];
     [_moreRelaxBtn.titleLabel setFont:systemFont(15)];
@@ -272,7 +272,6 @@
     scrollView.contentSize = CGSizeMake(SCREEN_WIDTH, _relaxCollectionView.frame.origin.y + _relaxCollectionView.frame.size.height);
 }
 
-//TODO: 真机测试
 - (void)setupAdArr
 {
     self.recreationModel = [[RecreationModel alloc] initWithDictionary:[MainManager getMainDic] error:nil];

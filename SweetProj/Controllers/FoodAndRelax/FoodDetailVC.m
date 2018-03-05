@@ -13,6 +13,7 @@
 #import "TopicTableViewCell.h"
 #import "TggStarEvaluationView.h"
 #import "SelectionVC.h"
+#import "XWScanImage.h"
 
 #define BIANJU  22
 @interface FoodDetailVC ()<QMapViewDelegate> {
@@ -72,6 +73,7 @@
     
     self.title = @"店铺介绍";
     _scrollView = [[UIScrollView alloc] init];
+    _scrollView.userInteractionEnabled = YES;
     [self.view addSubview:_scrollView];
     _scrollView.backgroundColor = [UIColor whiteColor];
     [_scrollView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -80,12 +82,27 @@
         make.bottom.equalTo(-60);
     }];
     
+    
+    
     [self setupScrollView];
     [self setupMapDetail];
     [self setupArr];
     [self setupDetail];
     
     [self configAppointmentToolBar];
+    
+    UITapGestureRecognizer *tapGestureRecognizer1 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(scanBigImageClick1:)];
+    [_morePhotoImageView1 addGestureRecognizer:tapGestureRecognizer1];
+    UITapGestureRecognizer *tapGestureRecognizer2 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(scanBigImageClick1:)];
+    [_morePhotoImageView2 addGestureRecognizer:tapGestureRecognizer2];
+    UITapGestureRecognizer *tapGestureRecognizer3 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(scanBigImageClick1:)];
+    [_morePhotoImageView3 addGestureRecognizer:tapGestureRecognizer3];
+    UITapGestureRecognizer *tapGestureRecognizer4 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(scanBigImageClick1:)];
+    [_moreFoodImageView1 addGestureRecognizer:tapGestureRecognizer4];
+    UITapGestureRecognizer *tapGestureRecognizer5 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(scanBigImageClick1:)];
+    [_moreFoodImageView2 addGestureRecognizer:tapGestureRecognizer5];
+    UITapGestureRecognizer *tapGestureRecognizer6 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(scanBigImageClick1:)];
+    [_moreFoodImageView3 addGestureRecognizer:tapGestureRecognizer6];
 }
 
 
@@ -259,6 +276,7 @@
     _moreFoodImageView2 = [[UIImageView alloc] init];
     _moreFoodImageView2.contentMode = UIViewContentModeScaleAspectFill;
     _moreFoodImageView2.layer.masksToBounds = YES;
+    _moreFoodImageView2.userInteractionEnabled = YES;
     [self.scrollView addSubview:_moreFoodImageView2];
     [_moreFoodImageView2 mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerX.equalTo(0);
@@ -266,9 +284,11 @@
         make.height.width.equalTo((SCREEN_WIDTH - 30 - BIANJU*2)/3);
     }];
     
+    
     _moreFoodImageView1 = [[UIImageView alloc] init];
     _moreFoodImageView1.contentMode = UIViewContentModeScaleAspectFill;
     _moreFoodImageView1.layer.masksToBounds = YES;
+    _moreFoodImageView1.userInteractionEnabled = YES;
     [self.scrollView addSubview:_moreFoodImageView1];
     [_moreFoodImageView1 mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(BIANJU);
@@ -279,6 +299,7 @@
     _moreFoodImageView3 = [[UIImageView alloc] init];
     _moreFoodImageView3.contentMode = UIViewContentModeScaleAspectFill;
     _moreFoodImageView3.layer.masksToBounds = YES;
+    _moreFoodImageView3.userInteractionEnabled = YES;
     [self.scrollView addSubview:_moreFoodImageView3];
     [_moreFoodImageView3 mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(_moreFoodImageView2.mas_right).inset(15);
@@ -326,6 +347,7 @@
     _morePhotoImageView2 = [[UIImageView alloc] init];
     _morePhotoImageView2.contentMode = UIViewContentModeScaleAspectFill;
     _morePhotoImageView2.layer.masksToBounds = YES;
+    _morePhotoImageView2.userInteractionEnabled = YES;
     [self.scrollView addSubview:_morePhotoImageView2];
     [_morePhotoImageView2 mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerX.equalTo(0);
@@ -336,6 +358,7 @@
     _morePhotoImageView1 = [[UIImageView alloc] init];
     _morePhotoImageView1.contentMode = UIViewContentModeScaleAspectFill;
     _morePhotoImageView1.layer.masksToBounds = YES;
+    _morePhotoImageView1.userInteractionEnabled = YES;
     [self.scrollView addSubview:_morePhotoImageView1];
     [_morePhotoImageView1 mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(BIANJU);
@@ -346,6 +369,7 @@
     _morePhotoImageView3 = [[UIImageView alloc] init];
     _morePhotoImageView3.contentMode = UIViewContentModeScaleAspectFill;
     _morePhotoImageView3.layer.masksToBounds = YES;
+    _morePhotoImageView3.userInteractionEnabled = YES;
     [self.scrollView addSubview:_morePhotoImageView3];
     [_morePhotoImageView3 mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(_morePhotoImageView2.mas_right).inset(15);
@@ -436,6 +460,12 @@
     _morePhotoImageView1.image = [_ImageArr objectAtIndex:0];
     _morePhotoImageView2.image = [_ImageArr objectAtIndex:1];
     _morePhotoImageView3.image = [_ImageArr objectAtIndex:2];
+}
+
+-(void)scanBigImageClick1:(UITapGestureRecognizer *)tap{
+    NSLog(@"点击图片");
+    UIImageView *clickedImageView = (UIImageView *)tap.view;
+    [XWScanImage scanBigImageWithImageView:clickedImageView];
 }
 
 - (void)setupArr {
