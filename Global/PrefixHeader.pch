@@ -1,0 +1,19 @@
+//
+//  PrefixHeader.pch
+//  SweetProj
+//
+//  Created by 殷婕 on 2017/12/11.
+//  Copyright © 2017年 AdaKjj. All rights reserved.
+//
+
+#ifndef PrefixHeader_pch
+#define PrefixHeader_pch
+
+#import "Global.h"
+#import "Request.h"
+#import "Masonry.h"
+#import "std.h"
+#import "FMDB.h"
+
+
+#endif /* PrefixHeader_pch */

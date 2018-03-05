@@ -1,0 +1,214 @@
+//
+//  UIView+DDAddition.h
+//  IOSDuoduo
+//
+//  Created by 独嘉 on 14-5-26.
+//  Copyright (c) 2014年 dujia. All rights reserved.
+//
+
+
+#import <QuartzCore/QuartzCore.h>
+
+@implementation UIView (DDAddition)
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+- (CGFloat)viewLeft {
+    return self.frame.origin.x;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+- (void)setViewLeft:(CGFloat)x {
+    CGRect frame = self.frame;
+    frame.origin.x = x;
+    self.frame = frame;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+- (CGFloat)viewTop {
+    return self.frame.origin.y;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+- (void)setViewTop:(CGFloat)y {
+    CGRect frame = self.frame;
+    frame.origin.y = y;
+    self.frame = frame;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+- (CGFloat)viewRight {
+    return self.viewLeft + self.viewWidth;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+- (void)setViewRight:(CGFloat)right {
+    if(right == self.viewRight){
+        return;
+    }
+    CGRect frame = self.frame;
+    frame.origin.x = right - frame.size.width;
+    self.frame = frame;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+- (CGFloat)viewBottom {
+    return self.viewTop + self.viewHeight;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+- (void)setViewBottom:(CGFloat)bottom {
+    if(bottom == self.viewBottom){
+        return;
+    }
+    
+    CGRect frame = self.frame;
+    frame.origin.y = bottom - frame.size.height;
+    self.frame = frame;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+- (CGFloat)viewCenterX {
+    return self.center.x;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+- (void)setViewCenterX:(CGFloat)centerX {
+    self.center = CGPointMake(centerX, self.center.y);
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+- (CGFloat)viewCenterY {
+    return self.center.y;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+- (void)setViewCenterY:(CGFloat)centerY {
+    self.center = CGPointMake(self.center.x, centerY);
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+- (CGFloat)viewWidth {
+    return self.frame.size.width;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+- (void)setViewWidth:(CGFloat)width {
+    CGRect frame = self.frame;
+    frame.size.width = width;
+    self.frame = frame;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+- (CGFloat)viewHeight {
+    return self.frame.size.height;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+- (void)setViewHeight:(CGFloat)height {
+    if(height == self.viewHeight){
+        return;
+    }
+    
+    CGRect frame = self.frame;
+    frame.size.height = height;
+    self.frame = frame;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+- (CGPoint)viewOrigin {
+    return self.frame.origin;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+- (void)setViewOrigin:(CGPoint)origin {
+    CGRect frame = self.frame;
+    frame.origin = origin;
+    self.frame = frame;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+- (CGSize)viewSize {
+    return self.frame.size;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+- (void)setViewSize:(CGSize)size {
+    CGRect frame = self.frame;
+    frame.size = size;
+    self.frame = frame;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+- (UIView*)descendantOrSelfWithClass:(Class)cls {
+    if ([self isKindOfClass:cls])
+        return self;
+    
+    for (UIView* child in self.subviews) {
+        UIView* it = [child descendantOrSelfWithClass:cls];
+        if (it)
+            return it;
+    }
+    
+    return nil;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+- (UIView*)ancestorOrSelfWithClass:(Class)cls {
+    if ([self isKindOfClass:cls]) {
+        return self;
+    } else if (self.superview) {
+        return [self.superview ancestorOrSelfWithClass:cls];
+    }
+    else {
+        return nil;
+    }
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+- (void)removeAllSubviews {
+    while (self.subviews.count) {
+        UIView* child = self.subviews.lastObject;
+        [child removeFromSuperview];
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+- (UIView *)roundedCornerAndBorderView{
+    self.clipsToBounds = YES;
+    self.layer.cornerRadius = 5;
+    //self.layer.borderColor = [UIColor grayColor].CGColor;
+    //self.layer.borderWidth = 1;
+    
+    return self;
+}
+
+- (id)subviewWithTag:(NSInteger)tag{
+    
+    for(UIView *view in [self subviews]){
+        if(view.tag == tag){
+            return view;
+        }
+    }
+    return nil;
+}
+
+@end
