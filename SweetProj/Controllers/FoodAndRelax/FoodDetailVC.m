@@ -159,7 +159,7 @@
     [self.topImageView addSubview:_backBtn];
     [_backBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(15);
-        make.top.equalTo(20);
+        make.top.equalTo(15);
         make.width.and.height.equalTo(40);
     }];
     

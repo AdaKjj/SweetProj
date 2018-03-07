@@ -7,9 +7,11 @@
 //
 
 #import <Foundation/Foundation.h>
-
+#import "MainVC.h"
 @interface MainManager : NSObject <NSURLConnectionDataDelegate>
 
-+ (NSDictionary *)getMainDic;
+@property (nonatomic) MainVC *mainVC;
+
+- (void)sendRequestWithLong:(NSString *)lon lat:(NSString *)lat;
 
 @end

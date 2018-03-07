@@ -22,4 +22,6 @@
 @property (nonatomic) AdUrlModel *adUrlModel;
 @property (nonatomic) OneRecreationModel *oneRecreationModel;
 
+- (void)getAdArr:(NSDictionary *)jsonDic;
+
 @end

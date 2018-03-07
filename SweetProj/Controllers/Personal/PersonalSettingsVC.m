@@ -153,7 +153,7 @@
     cell.textLabel.text = cellItem.title;
     
     if ([cellItem.title isEqualToString:@"头像"]) {
-        
+        [cell showCustomAccessoryView];
         const NSInteger ImageRightMargin = 35;
         const NSInteger ImageTopMargin = 12;
         
