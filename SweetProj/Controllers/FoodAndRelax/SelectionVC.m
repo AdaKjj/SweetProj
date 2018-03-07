@@ -11,9 +11,10 @@
 #import "UIView+DDAddition.h"
 #import <pop/POP.h>
 #import "ReservationInfoVC.h"
+#import "UIImage+Resize.h"
 
 #define kDuration 0.2
-#define kPopMenuItemWidth 40
+#define kPopMenuItemWidth 60
 #define kPopMenuItemHeight kPopMenuItemWidth
 #define kInterval (0.195 / _btnArray.count)
 
@@ -53,10 +54,17 @@
         make.height.equalTo(contentHeight);
     }];
     
+    UIImage *doubleImage = [UIImage imageNamed:@"order_double"];
+    doubleImage = [doubleImage resizedImage:CGSizeMake(45, 45) interpolationQuality:kCGInterpolationDefault];
+    UIImage *seatImage = [UIImage imageNamed:@"order_seat"];
+    seatImage = [seatImage resizedImage:CGSizeMake(45, 45) interpolationQuality:kCGInterpolationDefault];
+    UIImage *singleImage = [UIImage imageNamed:@"order_single"];
+    singleImage = [singleImage resizedImage:CGSizeMake(45, 45) interpolationQuality:kCGInterpolationDefault];
+    
     UIButton *doubleRes = [UIButton buttonWithType:UIButtonTypeCustom];
     doubleRes.titleLabel.font = systemFont(12);
     [doubleRes setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    [doubleRes setImage:[UIImage imageNamed:@"order_double"] forState:UIControlStateNormal];
+    [doubleRes setImage:doubleImage forState:UIControlStateNormal];
     [doubleRes setTitle:@"多人订餐" forState:UIControlStateNormal];
     [doubleRes addTarget:self action:@selector(onTouchDouble) forControlEvents:UIControlEventTouchUpInside];
     [_contentView addSubview:doubleRes];
@@ -66,7 +74,7 @@
     UIButton *seatRes = [UIButton buttonWithType:UIButtonTypeCustom];
     seatRes.titleLabel.font = systemFont(12);
     [seatRes setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    [seatRes setImage:[UIImage imageNamed:@"order_seat"] forState:UIControlStateNormal];
+    [seatRes setImage:seatImage forState:UIControlStateNormal];
     [seatRes setTitle:@"预定座位" forState:UIControlStateNormal];
     [seatRes addTarget:self action:@selector(onTouchSeat) forControlEvents:UIControlEventTouchUpInside];
     [_contentView addSubview:seatRes];
@@ -76,7 +84,7 @@
     UIButton *singleRes = [UIButton buttonWithType:UIButtonTypeCustom];
     singleRes.titleLabel.font = systemFont(12);
     [singleRes setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    [singleRes setImage:[UIImage imageNamed:@"order_single"] forState:UIControlStateNormal];
+    [singleRes setImage:singleImage forState:UIControlStateNormal];
     [singleRes setTitle:@"单人订餐" forState:UIControlStateNormal];
     [singleRes addTarget:self action:@selector(onTouchSingle) forControlEvents:UIControlEventTouchUpInside];
     [_contentView addSubview:singleRes];
@@ -94,12 +102,13 @@
         make.height.equalTo(40);
     }];
     
-    _btnArray = @[seatRes, doubleRes, singleRes];
-    
-    [_contentView layoutIfNeeded];
     [doubleRes layoutButtonWithEdgeInsetsStyle:ButtonEdgeInsetsStyleImageTop imageTitlespace:5];
     [seatRes layoutButtonWithEdgeInsetsStyle:ButtonEdgeInsetsStyleImageTop imageTitlespace:5];
     [singleRes layoutButtonWithEdgeInsetsStyle:ButtonEdgeInsetsStyleImageTop imageTitlespace:5];
+    
+    _btnArray = @[doubleRes, seatRes, singleRes];
+    
+    [_contentView layoutIfNeeded];
     
 }
 
@@ -147,7 +156,7 @@
         CGFloat buttonX,buttonY;
         
         buttonX = index * kPopMenuItemWidth + (index+1) * span;
-        buttonY = kPopMenuItemWidth;
+        buttonY = 40;
         
         CGRect fromValue = CGRectMake(buttonX, _contentView.viewBottom-20, kPopMenuItemWidth, kPopMenuItemHeight);
         CGRect toValue = CGRectMake(buttonX, buttonY, kPopMenuItemWidth, kPopMenuItemHeight);
@@ -187,7 +196,7 @@
         
         CGFloat buttonX,buttonY;
         buttonX = index * kPopMenuItemWidth + (index+1) * span;
-        buttonY = kPopMenuItemWidth;
+        buttonY = 40;
         
         CGRect toValue = CGRectMake(buttonX, _contentView.viewHeight, kPopMenuItemWidth, kPopMenuItemHeight);
         CGRect fromValue = CGRectMake(buttonX, buttonY, kPopMenuItemWidth, kPopMenuItemHeight);
