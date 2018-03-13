@@ -1,31 +1,29 @@
 //
-//  MainManager.m
+//  PreViewDDListManager.m
 //  SweetProj
 //
-//  Created by 殷婕 on 2018/1/24.
+//  Created by 殷婕 on 2018/3/7.
 //  Copyright © 2018年 AdaKjj. All rights reserved.
 //
 
-#import "MainManager.h"
-#import "MainVC.h"
+#import "PreViewDDListManager.h"
 
-@interface MainManager ()
-{
+@interface PreViewDDListManager () {
     NSMutableData *buff;   //暂存响应的数据
 }
 @end
 
-@implementation MainManager
+@implementation PreViewDDListManager
 
-- (void)sendRequestWithLong:(NSString *)lon lat:(NSString *)lat {
+- (void)sendRequestWithCity:(NSString *)city{
     //第一步，创建url
-    NSURL *url = [NSURL URLWithString:@"https://thethreestooges.cn/consumer/bean/home_page/home_page_show.php"];
+    NSURL *url = [NSURL URLWithString:@"https://thethreestooges.cn:666/application/searching/select_show.php"];
     NSString *sendString = nil;
-    sendString = [NSString stringWithFormat:@"long=%@&lat=%@",lon,lat];
+    sendString = [NSString stringWithFormat:@"city=%@",city];
     //第二步，创建请求
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc]initWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:10];
     [request setHTTPMethod:@"POST"];
-
+    
     NSData *data = [sendString dataUsingEncoding:NSUTF8StringEncoding];
     [request setHTTPBody:data];
     //第三步，连接服务器
@@ -48,11 +46,15 @@
 -(void)connectionDidFinishLoading:(NSURLConnection *)connection
 {
     NSDictionary *jsonDic = [NSJSONSerialization JSONObjectWithData:buff options:NSJSONReadingMutableContainers error:nil] ;
-    [_mainVC getAdArr:jsonDic];
+    NSDictionary *value = (NSDictionary *)[jsonDic objectForKey:@"liist"];
+    if (value != nil){
+        [_foodPreviewVC getDDMenuArr:value];
+    }
 }
 //网络请求过程中，出现任何错误（断网，连接超时等）会进入此方法
 -(void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
 {
     NSLog(@"%@",[error localizedDescription]);
 }
+
 @end

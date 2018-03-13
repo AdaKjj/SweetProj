@@ -36,7 +36,6 @@
 @property (nonatomic) UITextField *searchTF;
 @property (nonatomic) UISearchBar *searchBar;
 
-@property (nonatomic) UIButton *locBtn;
 /** 城市定位管理器*/
 @property (nonatomic, strong) JFLocation *locationManager;
 /** 城市数据管理器*/
@@ -294,6 +293,7 @@
 - (void)moreFoodBtnClicked {
     FoodPreviewVC *vc = [[FoodPreviewVC alloc]init];
     vc.topicString = @"美食";
+    vc.cityString = _leftButton.titleLabel.text;
     vc.hidesBottomBarWhenPushed = YES;
     [self.navigationController pushViewController:vc animated:YES];
 }
@@ -301,6 +301,7 @@
 - (void)moreRelaxBtnClicked {
     FoodPreviewVC *vc = [[FoodPreviewVC alloc]init];
     vc.topicString = @"休闲娱乐";
+    vc.cityString = _leftButton.titleLabel.text;
     vc.hidesBottomBarWhenPushed = YES;
     [self.navigationController pushViewController:vc animated:YES];
 }

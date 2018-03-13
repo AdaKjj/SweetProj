@@ -74,5 +74,6 @@
 
 #import "NSObject+Property.h"
 #import "UIImageView+WebCache.h"
+#import <AliyunOSSiOS/OSSService.h>
 
 #endif /* std_h */

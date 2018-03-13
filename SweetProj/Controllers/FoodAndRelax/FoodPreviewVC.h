@@ -7,8 +7,15 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "DDMenuModel.h"
+@class DDMenuModel;
 
 @interface FoodPreviewVC : UIViewController
 
 @property (nonatomic) NSString *topicString;
+@property (nonatomic) NSString *cityString;
+
+@property (nonatomic) DDMenuModel *ddMenuModel;
+
+- (void)getDDMenuArr:(NSDictionary *)valueDic;
 @end

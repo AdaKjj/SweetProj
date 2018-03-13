@@ -146,6 +146,9 @@
 		E7323F401FFE23BC000F802B /* CollectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E7323F3C1FFE23BB000F802B /* CollectionViewController.m */; };
 		E7323F411FFE23BC000F802B /* CollectionViewHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = E7323F3D1FFE23BB000F802B /* CollectionViewHeaderView.m */; };
 		E7323F441FFE24C4000F802B /* meituan.json in Resources */ = {isa = PBXBuildFile; fileRef = E7323F421FFE24C4000F802B /* meituan.json */; };
+		E73314C2204FC2CB00C852F6 /* PreViewDDListManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E73314C1204FC2CB00C852F6 /* PreViewDDListManager.m */; };
+		E73314C5204FC6BE00C852F6 /* DDMenuModel.m in Sources */ = {isa = PBXBuildFile; fileRef = E73314C4204FC6BE00C852F6 /* DDMenuModel.m */; };
+		E73314CA204FD3FB00C852F6 /* libresolv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = E73314C9204FD3FB00C852F6 /* libresolv.tbd */; };
 		E7335D6D1FE90CB60035AB35 /* w100.png in Resources */ = {isa = PBXBuildFile; fileRef = E7335D3B1FE90CB40035AB35 /* w100.png */; };
 		E7335D6E1FE90CB60035AB35 /* w101.png in Resources */ = {isa = PBXBuildFile; fileRef = E7335D3C1FE90CB40035AB35 /* w101.png */; };
 		E7335D6F1FE90CB60035AB35 /* w202.png in Resources */ = {isa = PBXBuildFile; fileRef = E7335D3D1FE90CB40035AB35 /* w202.png */; };
@@ -503,6 +506,11 @@
 		E7323F3C1FFE23BB000F802B /* CollectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CollectionViewController.m; sourceTree = "<group>"; };
 		E7323F3D1FFE23BB000F802B /* CollectionViewHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CollectionViewHeaderView.m; sourceTree = "<group>"; };
 		E7323F421FFE24C4000F802B /* meituan.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = meituan.json; sourceTree = "<group>"; };
+		E73314C0204FC2CB00C852F6 /* PreViewDDListManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PreViewDDListManager.h; sourceTree = "<group>"; };
+		E73314C1204FC2CB00C852F6 /* PreViewDDListManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PreViewDDListManager.m; sourceTree = "<group>"; };
+		E73314C3204FC6BE00C852F6 /* DDMenuModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DDMenuModel.h; sourceTree = "<group>"; };
+		E73314C4204FC6BE00C852F6 /* DDMenuModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DDMenuModel.m; sourceTree = "<group>"; };
+		E73314C9204FD3FB00C852F6 /* libresolv.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libresolv.tbd; path = usr/lib/libresolv.tbd; sourceTree = SDKROOT; };
 		E7335D3B1FE90CB40035AB35 /* w100.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = w100.png; sourceTree = "<group>"; };
 		E7335D3C1FE90CB40035AB35 /* w101.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = w101.png; sourceTree = "<group>"; };
 		E7335D3D1FE90CB40035AB35 /* w202.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = w202.png; sourceTree = "<group>"; };
@@ -652,6 +660,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E73314CA204FD3FB00C852F6 /* libresolv.tbd in Frameworks */,
 				E71A4470200DF71E005FA7F1 /* libFMDB.a in Frameworks */,
 				E71A4407200C4D11005FA7F1 /* CoreGraphics.framework in Frameworks */,
 				E71A4405200C4D07005FA7F1 /* Foundation.framework in Frameworks */,
@@ -698,6 +707,8 @@
 				E7397F00203D569F005B2EB5 /* OrderModel.m */,
 				E713C440201881980037A4CA /* RecreationModel.h */,
 				E713C441201881980037A4CA /* RecreationModel.m */,
+				E73314C3204FC6BE00C852F6 /* DDMenuModel.h */,
+				E73314C4204FC6BE00C852F6 /* DDMenuModel.m */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -764,6 +775,7 @@
 		E71A43F9200C4CD7005FA7F1 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				E73314C9204FD3FB00C852F6 /* libresolv.tbd */,
 				E71A4471200DF71E005FA7F1 /* libFMDB.a */,
 				E71A4406200C4D11005FA7F1 /* CoreGraphics.framework */,
 				E71A4404200C4D07005FA7F1 /* Foundation.framework */,
@@ -1470,6 +1482,8 @@
 				E731F9BF1FCDA0E100E57200 /* GetBackPwdManager.m */,
 				E713C41A201875950037A4CA /* MainManager.h */,
 				E713C41B201875950037A4CA /* MainManager.m */,
+				E73314C0204FC2CB00C852F6 /* PreViewDDListManager.h */,
+				E73314C1204FC2CB00C852F6 /* PreViewDDListManager.m */,
 			);
 			path = Manager;
 			sourceTree = "<group>";
@@ -1811,6 +1825,7 @@
 				E7202DE81FC4007F00E78F4A /* ViewController+MASAdditions.m in Sources */,
 				E713C437201880580037A4CA /* JSONModelError.m in Sources */,
 				E7323F401FFE23BC000F802B /* CollectionViewController.m in Sources */,
+				E73314C2204FC2CB00C852F6 /* PreViewDDListManager.m in Sources */,
 				E72882871FCE62460048AC54 /* PersonalVC.m in Sources */,
 				E733EA02204CEA3400591F68 /* UIView+DDAddition.m in Sources */,
 				E71A446D200DE7B0005FA7F1 /* JFCityCollectionFlowLayout.m in Sources */,
@@ -1821,6 +1836,7 @@
 				E7F970031FC53D7300FED410 /* LoginRegisterManager.m in Sources */,
 				E7202DA31FC3DB5E00E78F4A /* main.m in Sources */,
 				E7202DEB1FC4007F00E78F4A /* MASLayoutConstraint.m in Sources */,
+				E73314C5204FC6BE00C852F6 /* DDMenuModel.m in Sources */,
 				E7D9D7D61FEA56DB001F647A /* GetTopicArr.m in Sources */,
 				E7D41C09203ECC4D00D6A378 /* RightCollectionViewCell.m in Sources */,
 				E713C436201880580037A4CA /* JSONModel.m in Sources */,
