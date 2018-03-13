@@ -34,7 +34,6 @@
 /** 导航栏*/
 @property (nonatomic) UIButton *leftButton;
 @property (nonatomic) UITextField *searchTF;
-@property (nonatomic) UISearchBar *searchBar;
 
 /** 城市定位管理器*/
 @property (nonatomic, strong) JFLocation *locationManager;
@@ -254,8 +253,7 @@
 
 - (void)setupSearchBar {
     //导航栏左侧图标
-    UIImage *leftImage = [UIImage imageNamed:@"map"];
-    leftImage = [leftImage resizedImage:CGSizeMake(20, 20) interpolationQuality:kCGInterpolationHigh];
+    UIImage *leftImage = [UIImage imageNamed:@"定位"];
     _leftButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [_leftButton setImage:leftImage forState:UIControlStateNormal];
     [_leftButton setTitle:@"定位中" forState:UIControlStateNormal];
