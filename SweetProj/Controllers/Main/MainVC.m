@@ -27,6 +27,8 @@
 #import "UIButton+EdgeInsets.h"
 
 #define KCURRENTCITYINFODEFAULTS [NSUserDefaults standardUserDefaults]
+#define FONT_TOPIC systemFont(17)
+#define FONT_OTHER systemFont(13)
 
 @interface MainVC ()<UISearchBarDelegate, UICollectionViewDataSource,UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, JFCityViewControllerDelegate, CLLocationManagerDelegate, UITextFieldDelegate>
 
@@ -117,7 +119,7 @@
     AdCellLayout *layout = [[AdCellLayout alloc] init];
     //2.初始化collectionView
     layout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
-    _topicCollectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 220) collectionViewLayout:layout];
+    _topicCollectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 200) collectionViewLayout:layout];
     _topicCollectionView.tag = 0;
     [scrollView addSubview:_topicCollectionView];
     
@@ -137,42 +139,42 @@
     foodToolBar.userInteractionEnabled = YES;
     [scrollView addSubview:foodToolBar];
     [foodToolBar mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(235);
+        make.top.equalTo(215);
         make.left.equalTo(0);
-        make.height.equalTo(35);
+        make.height.equalTo(25);
         make.width.equalTo(SCREEN_WIDTH);
     }];
     
     UILabel *foodLabel = [[UILabel alloc]init];
     foodLabel.text = @"美食";
     foodLabel.textColor = RGB(75, 173, 96);
-    [foodLabel setFont:systemFont(22)];
+    [foodLabel setFont:FONT_TOPIC];
     [foodToolBar addSubview:foodLabel];
     [foodLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(2);
+        make.centerY.equalTo(0);
         make.left.equalTo(15);
         make.width.equalTo(70);
-        make.height.equalTo(30);
+        make.height.equalTo(19);
     }];
     
     _moreFoodBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [_moreFoodBtn setTitle:@"查看更多" forState:UIControlStateNormal];
     [_moreFoodBtn setTitleColor:RGB(75, 173, 96) forState:UIControlStateNormal];
-    [_moreFoodBtn.titleLabel setFont:systemFont(15)];
+    [_moreFoodBtn.titleLabel setFont:FONT_OTHER];
     _moreFoodBtn.contentHorizontalAlignment =  UIControlContentVerticalAlignmentBottom;
     [_moreFoodBtn addTarget:self action:@selector(moreFoodBtnClicked) forControlEvents:UIControlEventTouchUpInside];
     [foodToolBar addSubview:_moreFoodBtn];
     [_moreFoodBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.bottom.equalTo(-2);
+        make.centerY.equalTo(0);
         make.right.equalTo(-12);
         make.width.equalTo(80);
-        make.height.equalTo(30);
+        make.height.equalTo(14);
     }];
     
     //————————————————————————————美食
     UICollectionViewFlowLayout *foodLayout = [[UICollectionViewFlowLayout alloc] init];
     foodLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
-    _foodCollectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 270, SCREEN_WIDTH, 180) collectionViewLayout:foodLayout];
+    _foodCollectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 240, SCREEN_WIDTH, 160) collectionViewLayout:foodLayout];
     _foodCollectionView.tag = 2;
     [scrollView addSubview:_foodCollectionView];
     
@@ -187,19 +189,19 @@
     relaxToolBar.userInteractionEnabled = YES;
     [scrollView addSubview:relaxToolBar];
     [relaxToolBar mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(465);
+        make.top.equalTo(415);
         make.left.equalTo(0);
-        make.height.equalTo(35);
+        make.height.equalTo(25);
         make.width.equalTo(SCREEN_WIDTH);
     }];
     
     UILabel *relaxLabel = [[UILabel alloc]init];
     relaxLabel.text = @"休闲娱乐";
     relaxLabel.textColor = RGB(84, 123, 199);
-    [relaxLabel setFont:systemFont(22)];
+    [relaxLabel setFont:FONT_TOPIC];
     [relaxToolBar addSubview:relaxLabel];
     [relaxLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(2);
+        make.centerY.equalTo(0);
         make.left.equalTo(15);
         make.width.equalTo(100);
         make.height.equalTo(25);
@@ -207,14 +209,13 @@
     
     _moreRelaxBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [_moreRelaxBtn setTitle:@"查看更多" forState:UIControlStateNormal];
-    
     [_moreRelaxBtn setTitleColor:RGB(84, 123, 199) forState:UIControlStateNormal];
-    [_moreRelaxBtn.titleLabel setFont:systemFont(15)];
+    [_moreRelaxBtn.titleLabel setFont:FONT_OTHER];
     _moreRelaxBtn.contentHorizontalAlignment = UIControlContentVerticalAlignmentBottom;
     [_moreRelaxBtn addTarget:self action:@selector(moreRelaxBtnClicked) forControlEvents:UIControlEventTouchUpInside];
     [relaxToolBar addSubview:_moreRelaxBtn];
     [_moreRelaxBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.bottom.equalTo(-2);
+        make.centerY.equalTo(0);
         make.right.equalTo(-12);
         make.width.equalTo(80);
         make.height.equalTo(30);
@@ -222,7 +223,7 @@
     //————————————————————————————休闲娱乐
     UICollectionViewFlowLayout *relaxLayout = [[UICollectionViewFlowLayout alloc] init];
     relaxLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
-    _relaxCollectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 500, SCREEN_WIDTH, 180) collectionViewLayout:relaxLayout];
+    _relaxCollectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 440, SCREEN_WIDTH, 160) collectionViewLayout:relaxLayout];
     _relaxCollectionView.tag = 3;
     [scrollView addSubview:_relaxCollectionView];
     
@@ -259,7 +260,7 @@
     [_leftButton setTitle:@"定位中" forState:UIControlStateNormal];
     [_leftButton setTitle:@"定位中" forState:UIControlStateSelected];
     [_leftButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    [_leftButton.titleLabel setFont:systemFont(14)];
+    [_leftButton.titleLabel setFont:systemFont(12)];
     _leftButton.frame = CGRectMake(0, 0, 50, 44);
     _leftButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
     [_leftButton layoutButtonWithEdgeInsetsStyle:ButtonEdgeInsetsStyleImageLeft imageTitlespace:1];
@@ -267,10 +268,14 @@
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:_leftButton];
     
     //搜索框
-    UIImageView *searchImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 20, 20)];
-    searchImageView.image = [[UIImage imageNamed:@"search"] resizedImage:CGSizeMake(20, 20) interpolationQuality:kCGInterpolationHigh];
+    UIView *leftView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, 35, 35)];
+    leftView.backgroundColor = [UIColor clearColor];
+    UIImageView *searchImageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 7, 20, 20)];
+    searchImageView.image = [UIImage imageNamed:@"SearchIcon"];
     searchImageView.contentMode = UIViewContentModeCenter;
-    _searchTF = [[UITextField alloc] initWithFrame:CGRectMake(0,0,SCREEN_WIDTH - 130,35)];
+    [leftView addSubview:searchImageView];
+    
+    _searchTF = [[UITextField alloc] initWithFrame:CGRectMake(0,0,SCREEN_WIDTH - 140,35)];
     _searchTF.borderStyle = UITextBorderStyleNone;
     _searchTF.textColor = [UIColor blackColor];
     _searchTF.backgroundColor = [UIColor whiteColor];
@@ -280,7 +285,7 @@
     _searchTF.layer.cornerRadius = 20;
     _searchTF.returnKeyType = UIReturnKeySearch;
     _searchTF.clearButtonMode = UITextFieldViewModeAlways;
-    _searchTF.leftView = searchImageView;
+    _searchTF.leftView = leftView;
     _searchTF.clearsOnBeginEditing = YES;
     _searchTF.tag = 1;
     _searchTF.leftViewMode = UITextFieldViewModeAlways;
@@ -432,10 +437,10 @@
 //设置每个item的尺寸
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
     if (collectionView .tag == 0) {
-        return CGSizeMake(224, 160);
+        return CGSizeMake(196, 140);
     }
     else {
-        return CGSizeMake(190, 180);
+        return CGSizeMake(186, 160);
     }
 }
 
@@ -451,6 +456,7 @@
         self.oneRecreationModel = self.foodModel.food[indexPath.row];
         
         MainItemCell *cell = (MainItemCell *)[collectionView dequeueReusableCellWithReuseIdentifier:@"mainCell" forIndexPath:indexPath];
+        cell.mer_id = self.oneRecreationModel.mer_id;
         [cell.storeImageView sd_setImageWithURL:self.oneRecreationModel.pho_url];
         cell.storNameLabel.text = self.oneRecreationModel.name;
         cell.distanceLabel.text = [NSString stringWithFormat:@"%.2f公里",self.oneRecreationModel.distance];
@@ -467,6 +473,7 @@
         
         MainItemCell *cell = (MainItemCell *)[collectionView dequeueReusableCellWithReuseIdentifier:@"relaxCell" forIndexPath:indexPath];
         [cell.storeImageView sd_setImageWithURL:self.oneRecreationModel.pho_url];
+        cell.mer_id = self.oneRecreationModel.mer_id;
         cell.storNameLabel.text = self.oneRecreationModel.name;
         cell.distanceLabel.text = [NSString stringWithFormat:@"%.2f公里",self.oneRecreationModel.distance];
         cell.numOfCommentLabel.text = [NSString stringWithFormat:@"%d条评论",self.oneRecreationModel.time];
@@ -484,8 +491,7 @@
         MainItemCell *cell = (MainItemCell *)[collectionView cellForItemAtIndexPath:indexPath];
         
         FoodDetailVC *detailVC = [[FoodDetailVC alloc] init];
-        detailVC.storeString = cell.storNameLabel.text;
-        detailVC.topImage = cell.storeImageView.image;
+        detailVC.mer_id = cell.mer_id;
         detailVC.hidesBottomBarWhenPushed = YES;
         [self.navigationController pushViewController:detailVC animated:YES];
     }

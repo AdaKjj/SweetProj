@@ -16,6 +16,8 @@
 @property (nonatomic) UILabel *typeLabel;
 @property (nonatomic) UILabel *distanceLabel;
 
+@property (nonatomic) int mer_id;
+
 @property (nonatomic) UIColor *textColor;
 
 @end

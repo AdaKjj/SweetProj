@@ -17,12 +17,10 @@
         _adImageView.layer.masksToBounds = YES;
         _adImageView.layer.cornerRadius = 5;
         _adImageView.contentMode = UIViewContentModeScaleAspectFill;
-        _adImageView.backgroundColor = [UIColor lightGrayColor];
+        _adImageView.backgroundColor = COLOR_LIGHTXX_GRAY;
         [self.contentView addSubview:_adImageView];
         [_adImageView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.left.top.equalTo(0);
-            make.height.equalTo(160);
-            make.width.equalTo(224);
+            make.left.top.right.bottom.equalTo(0);
         }];
     }
     return self;

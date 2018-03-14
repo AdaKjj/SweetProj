@@ -30,8 +30,6 @@
 @property (nonatomic, strong) NSArray *areas;
 @property (nonatomic, strong) NSArray *sorts;
 @property (nonatomic, weak) DOPDropDownMenu *menu;
-@property (nonatomic, weak) DOPDropDownMenu *menuB;
-
 
 @end
 
@@ -68,9 +66,9 @@
     //当下拉菜单收回时的回调，用于网络请求新的数据
     _menu.finishedBlock=^(DOPIndexPath *indexPath){
         if (indexPath.item >= 0) {
-            NSLog(@"收起:点击了 %ld - %ld - %ld 项目",indexPath.column,indexPath.row,indexPath.item);
+            NSLog(@"收起:点击了 %ld - %ld - %ld 项目",(long)indexPath.column,(long)indexPath.row,(long)indexPath.item);
         }else {
-            NSLog(@"收起:点击了 %ld - %ld 项目",indexPath.column,indexPath.row);
+            NSLog(@"收起:点击了 %ld - %ld 项目",(long)indexPath.column,(long)indexPath.row);
         }
     };
     //     创建menu 第一次显示 不会调用点击代理，可以用这个手动调用
@@ -80,9 +78,6 @@
 
 - (void)getDDMenuArr:(NSDictionary *)valueDic {
     self.ddMenuModel = [[DDMenuModel alloc] initWithDictionary:valueDic error:nil];
-//    [_foodCollectionView reloadData];
-//    [_relaxCollectionView reloadData];
-//    [_topicCollectionView reloadData];
     self.circle = self.ddMenuModel.circle;
     self.classify = self.ddMenuModel.classify;
     self.order = self.ddMenuModel.order;
@@ -95,6 +90,32 @@
     [_menu reloadData];
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    [self.navigationController setNavigationBarHidden:NO];
+    self.view.backgroundColor = [UIColor whiteColor];
+}
+
+- (void)createTableView
+{
+    self.itemTableView = [[UITableView alloc] init];
+    self.itemTableView.backgroundColor = [UIColor whiteColor];
+    self.itemTableView.dataSource = self;
+    self.itemTableView.delegate = self;
+    [self.itemTableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
+    [self.view addSubview: self.itemTableView];
+    [self.itemTableView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(50);
+        make.left.right.equalTo(0);
+        make.bottom.equalTo(0);
+    }];
+}
+
+- (void)setupArr {
+    _ImageArr = [[NSArray alloc] initWithObjects:[UIImage imageNamed:@"text1"], [UIImage imageNamed:@"text2"], [UIImage imageNamed:@"text3"], nil];
+    _nameArr = [[NSArray alloc] initWithObjects:@"老板娘烤肉店", @"老板娘烤肉店", @"老板娘烤肉店", nil];
+}
+
+#pragma mark - DDDropDownList
 - (NSInteger)numberOfColumnsInMenu:(DOPDropDownMenu *)menu
 {
     return 3;
@@ -192,37 +213,7 @@
     }
 }
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-
-- (void)viewWillAppear:(BOOL)animated {
-    [self.navigationController setNavigationBarHidden:NO];
-    self.view.backgroundColor = [UIColor whiteColor];
-}
-
-- (void)createTableView
-{
-    self.itemTableView = [[UITableView alloc] init];
-    self.itemTableView.backgroundColor = [UIColor whiteColor];
-    self.itemTableView.dataSource = self;
-    self.itemTableView.delegate = self;
-    [self.itemTableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
-    [self.view addSubview: self.itemTableView];
-    [self.itemTableView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(50);
-        make.left.right.equalTo(0);
-        make.bottom.equalTo(0);
-    }];
-}
-
-- (void)setupArr {
-    _ImageArr = [[NSArray alloc] initWithObjects:[UIImage imageNamed:@"text1"], [UIImage imageNamed:@"text2"], [UIImage imageNamed:@"text3"], nil];
-    _nameArr = [[NSArray alloc] initWithObjects:@"老板娘烤肉店", @"老板娘烤肉店", @"老板娘烤肉店", nil];
-}
-
-#pragma tableViewDelegate
+#pragma mark - tableViewDelegate
 //用来指定表视图的分区个数
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     
@@ -242,8 +233,6 @@
     FoodPreviewCell *cell = (FoodPreviewCell *)[tableView cellForRowAtIndexPath:indexPath];
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
     FoodDetailVC *detailVC = [[FoodDetailVC alloc] init];
-    detailVC.storeString = cell.storeNameLabel.text;
-    detailVC.topImage = cell.topImageView.image;
     [self.navigationController pushViewController:detailVC animated:YES];
     
 }

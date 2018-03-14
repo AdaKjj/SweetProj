@@ -66,6 +66,7 @@
 #define TABLE_SECTION_HEADER_COLOR       __RGB_245
 #define TABLE_SECTION_HEADER_TEXT_COLOR  __RGB_178
 #define TABLE_SECTION_FOOTER_TEXT_COLOR  __RGB_160
+#define COLOR_LIGHTXX_GRAY RGB(197,197,197)
 
 #define CELL_CHAT_TEXT_COLOR            __RGB_160      // 灰
 #define RED_COLOR                       RGB(221, 31, 42)

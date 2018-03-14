@@ -14,36 +14,14 @@
 #import "TggStarEvaluationView.h"
 #import "SelectionVC.h"
 #import "XWScanImage.h"
+#import "ShopDetailManager.h"
+#import "UIImageView+WebCache.h"
 
 #define BIANJU  22
-@interface FoodDetailVC ()<QMapViewDelegate> {
-    NSArray *_ImageArr;
-
-}
+#define FONT_SMALL systemFont(13)
+@interface FoodDetailVC ()<QMapViewDelegate>
 
 @property (nonatomic) UIScrollView *scrollView;
-@property (nonatomic) UIImageView *topImageView;
-
-@property (nonatomic) UIButton *backBtn;
-
-@property (nonatomic) UILabel *storeLabel;
-@property (nonatomic) UILabel *introLabel;
-@property (nonatomic) UILabel *bussinessHourLabel;
-@property (nonatomic) UILabel *consumptionLabel;
-
-@property (nonatomic) UILabel *detailLabel;
-
-@property (nonatomic) UIButton *moreFoodBtn;
-@property (nonatomic) UIImageView *moreFoodImageView1;
-@property (nonatomic) UIImageView *moreFoodImageView2;
-@property (nonatomic) UIImageView *moreFoodImageView3;
-
-@property (nonatomic) UIButton *morePhotoBtn;
-@property (nonatomic) UIImageView *morePhotoImageView1;
-@property (nonatomic) UIImageView *morePhotoImageView2;
-@property (nonatomic) UIImageView *morePhotoImageView3;
-
-
 
 @property (nonatomic) UIImageView *appointmentToolBar;
 @property (nonatomic) UIButton *appointmentBtn;
@@ -51,16 +29,28 @@
 @property (nonatomic) UIButton *telBtn;
 @property (nonatomic) TggStarEvaluationView *tggStarEvaView;
 
-
+// 地图
 @property (nonatomic, strong) QMapView *mapView;
 @property (nonatomic, strong) NSArray *annotations;
-@property (nonatomic) UIButton *currentLocBtn;
 
-@property (nonatomic) UITableView *photoTableView;
-
-@property (nonatomic) CGFloat cellHeight;
-
-
+// detail
+@property (nonatomic) NSString *name;
+@property (nonatomic) NSString *classify;
+@property (nonatomic) NSString *introduce;
+@property (nonatomic) NSString *phone;
+@property (nonatomic) NSString *address;
+@property (nonatomic) NSString *business_hours;
+@property (nonatomic) NSString *avecon;
+@property (nonatomic) NSString *time;
+@property (nonatomic) NSString *grade;
+@property (nonatomic) NSString *longitude;
+@property (nonatomic) NSString *latitude;
+@property (nonatomic) BOOL status;
+@property (nonatomic) BOOL reserve;
+// info
+@property (nonatomic) NSString *surface;
+@property (nonatomic) NSArray *recommend;
+@property (nonatomic) NSArray *environment;
 @end
 
 @implementation FoodDetailVC
@@ -82,30 +72,14 @@
         make.bottom.equalTo(-60);
     }];
     
+    // 从服务器得到详细信息
+    ShopDetailManager *mana = [[ShopDetailManager alloc] init];
+    mana.foodDetailVC = self;
+    [mana sendRequestWithMerID:[NSString stringWithFormat:@"%d",_mer_id]];
     
     
-    [self setupScrollView];
-    [self setupMapDetail];
-    [self setupArr];
-    [self setupDetail];
     
-    [self configAppointmentToolBar];
-    
-    UITapGestureRecognizer *tapGestureRecognizer1 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(scanBigImageClick1:)];
-    [_morePhotoImageView1 addGestureRecognizer:tapGestureRecognizer1];
-    UITapGestureRecognizer *tapGestureRecognizer2 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(scanBigImageClick1:)];
-    [_morePhotoImageView2 addGestureRecognizer:tapGestureRecognizer2];
-    UITapGestureRecognizer *tapGestureRecognizer3 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(scanBigImageClick1:)];
-    [_morePhotoImageView3 addGestureRecognizer:tapGestureRecognizer3];
-    UITapGestureRecognizer *tapGestureRecognizer4 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(scanBigImageClick1:)];
-    [_moreFoodImageView1 addGestureRecognizer:tapGestureRecognizer4];
-    UITapGestureRecognizer *tapGestureRecognizer5 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(scanBigImageClick1:)];
-    [_moreFoodImageView2 addGestureRecognizer:tapGestureRecognizer5];
-    UITapGestureRecognizer *tapGestureRecognizer6 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(scanBigImageClick1:)];
-    [_moreFoodImageView3 addGestureRecognizer:tapGestureRecognizer6];
 }
-
-
 
 - (void)viewWillAppear:(BOOL)animated {
     [self.navigationController setNavigationBarHidden:YES];
@@ -144,97 +118,91 @@
 }
 
 - (void)setupScrollView {
-    _topImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 150)];
-    _topImageView.contentMode = UIViewContentModeScaleAspectFill;
-    _topImageView.layer.masksToBounds = YES;
-    _topImageView.image = _topImage;
-    [_scrollView addSubview:_topImageView];
-    _topImageView.userInteractionEnabled = YES;
+    UIImageView *topImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 150)];
+    topImageView.backgroundColor = COLOR_LIGHTXX_GRAY;
+    topImageView.contentMode = UIViewContentModeScaleAspectFill;
+    topImageView.layer.masksToBounds = YES;
+    [topImageView sd_setImageWithURL:[NSURL URLWithString:_surface]];;
+    [_scrollView addSubview:topImageView];
+    topImageView.userInteractionEnabled = YES;
     
     UIImage *round = [UIImage ellipseImageOfSize:CGSizeMake(40, 40) color:RGBA(50, 50, 50, 0.5)];
-    _backBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    [_backBtn setImage:[UIImage imageNamed:@"btn_back"] forState:UIControlStateNormal];
-    [_backBtn setBackgroundImage:round forState:UIControlStateNormal];
-    [_backBtn addTarget:self action:@selector(onTouchBack) forControlEvents:UIControlEventTouchUpInside];
-    [self.topImageView addSubview:_backBtn];
-    [_backBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+    UIButton *backBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    [backBtn setImage:[UIImage imageNamed:@"btn_back"] forState:UIControlStateNormal];
+    [backBtn setBackgroundImage:round forState:UIControlStateNormal];
+    [backBtn addTarget:self action:@selector(onTouchBack) forControlEvents:UIControlEventTouchUpInside];
+    [topImageView addSubview:backBtn];
+    [backBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(15);
         make.top.equalTo(15);
         make.width.and.height.equalTo(40);
     }];
     
-    _storeLabel = [[UILabel alloc] init];
-    [_storeLabel setFont:BoldSystemFont(25)];
-    _storeLabel.text = _storeString;
-    _storeLabel.textAlignment = NSTextAlignmentCenter;
-    [_storeLabel setTextColor:[UIColor blackColor]];
-    [self.scrollView addSubview:_storeLabel];
-    [_storeLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+    UILabel *storeLabel = [[UILabel alloc] init];
+    [storeLabel setFont:BoldSystemFont(25)];
+    storeLabel.text = _name;
+    storeLabel.textAlignment = NSTextAlignmentCenter;
+    [storeLabel setTextColor:[UIColor blackColor]];
+    [self.scrollView addSubview:storeLabel];
+    [storeLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerX.equalTo(0);
-        make.top.equalTo(_topImageView.mas_bottom).inset(15);
+        make.top.equalTo(topImageView.mas_bottom).inset(15);
         make.width.equalTo(SCREEN_WIDTH);
         make.height.equalTo(28);
     }];
     
-    _introLabel = [[UILabel alloc] init];
-    [_introLabel setFont:systemFont(15)];
-    _introLabel.text = @"店铺介绍";
-    _introLabel.textAlignment = NSTextAlignmentCenter;
-    [_introLabel setTextColor:[UIColor blackColor]];
-    [self.scrollView addSubview:_introLabel];
-    [_introLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+    UILabel *introLabel = [[UILabel alloc] init];
+    [introLabel setFont:FONT_SMALL];
+    introLabel.text = _classify;
+    introLabel.textAlignment = NSTextAlignmentCenter;
+    [introLabel setTextColor:[UIColor blackColor]];
+    [self.scrollView addSubview:introLabel];
+    [introLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerX.equalTo(0);
-        make.top.equalTo(_storeLabel.mas_bottom).inset(10);
+        make.top.equalTo(storeLabel.mas_bottom).inset(10);
         make.width.equalTo(SCREEN_WIDTH);
         make.height.equalTo(18);
     }];
     
-    _bussinessHourLabel = [[UILabel alloc] init];
-    [_bussinessHourLabel setFont:systemFont(15)];
-    _bussinessHourLabel.text = @"营业时间： 8:00 - 23:00";
-    _bussinessHourLabel.textAlignment = NSTextAlignmentCenter;
-    [_bussinessHourLabel setTextColor:[UIColor blackColor]];
-    [self.scrollView addSubview:_bussinessHourLabel];
-    [_bussinessHourLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+    UILabel *bussinessHourLabel = [[UILabel alloc] init];
+    [bussinessHourLabel setFont:FONT_SMALL];
+    bussinessHourLabel.text = [NSString stringWithFormat:@"营业时间： %@",_business_hours];
+    bussinessHourLabel.textAlignment = NSTextAlignmentCenter;
+    [bussinessHourLabel setTextColor:[UIColor blackColor]];
+    [self.scrollView addSubview:bussinessHourLabel];
+    [bussinessHourLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerX.equalTo(0);
-        make.top.equalTo(_introLabel.mas_bottom).inset(15);
+        make.top.equalTo(introLabel.mas_bottom).inset(15);
         make.width.equalTo(SCREEN_WIDTH);
         make.height.equalTo(18);
     }];
     
-    _consumptionLabel = [[UILabel alloc] init];
-    [_consumptionLabel setFont:systemFont(15)];
-    _consumptionLabel.text = @"人均消费： 60 元";
-    _consumptionLabel.textAlignment = NSTextAlignmentCenter;
-    [_consumptionLabel setTextColor:[UIColor blackColor]];
-    [self.scrollView addSubview:_consumptionLabel];
-    [_consumptionLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+    UILabel *consumptionLabel = [[UILabel alloc] init];
+    [consumptionLabel setFont:FONT_SMALL];
+    consumptionLabel.text = [NSString stringWithFormat:@"人均消费： %@ 元",_avecon];
+    consumptionLabel.textAlignment = NSTextAlignmentCenter;
+    [consumptionLabel setTextColor:[UIColor blackColor]];
+    [self.scrollView addSubview:consumptionLabel];
+    [consumptionLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerX.equalTo(0);
-        make.top.equalTo(_bussinessHourLabel.mas_bottom).inset(15);
+        make.top.equalTo(bussinessHourLabel.mas_bottom).inset(15);
         make.width.equalTo(SCREEN_WIDTH);
         make.height.equalTo(18);
     }];
     
-    //计算文本高度
-    NSString *detailText = @"软件一共分为三个基本模块。第一、浏览店铺后预定及点餐功能。顾客可以在选择喜欢的店铺后根据可预定时间范围以及剩余座位数量进行预订并下订单。其中订单结算可以分为自行结算，AA制以及一人付清的方式。第二、“话题”功能。顾客可以在该模块中发送图片及文字（类似朋友圈）。第三、个人模块。该模块包括6个小单元：个人信息、会员卡及优惠卷、我的预定、我的收藏和历史订单。";
-    NSAttributedString *attributedText = [[NSAttributedString alloc] initWithString:detailText
-                                                                         attributes:@{NSFontAttributeName: systemFont(15)}];
-    CGRect rect = [attributedText boundingRectWithSize:(CGSize){SCREEN_WIDTH - BIANJU*2, CGFLOAT_MAX}
-                                               options:NSStringDrawingUsesLineFragmentOrigin
-                                               context:nil];
-    CGSize size = rect.size;
-    
-    _detailLabel = [[UILabel alloc] init];
-    [_detailLabel setFont:systemFont(15)];
-    _detailLabel.numberOfLines = 0;
-    _detailLabel.lineBreakMode = NSLineBreakByWordWrapping;
-    _detailLabel.text = detailText;
-    [self.scrollView addSubview:_detailLabel];
-    [_detailLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+    NSAttributedString *attStr = [self getAttributedStringWithString:_introduce lineSpace:5];
+    UILabel *detailLabel = [[UILabel alloc] init];
+    [detailLabel setFont:FONT_SMALL];
+    detailLabel.numberOfLines = 0;
+    detailLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    detailLabel.attributedText = attStr;
+    CGSize textSize = [detailLabel sizeThatFits:CGSizeMake(SCREEN_WIDTH - BIANJU*2, CGFLOAT_MAX)];
+    [self.scrollView addSubview:detailLabel];
+    [detailLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerX.equalTo(0);
-        make.top.equalTo(_consumptionLabel.mas_bottom).inset(20);
+        make.top.equalTo(consumptionLabel.mas_bottom).inset(20);
         make.width.equalTo(SCREEN_WIDTH - BIANJU*2);
-        make.height.equalTo(size.height);
+        make.height.equalTo(textSize.height);
     }];
     
     //————————————————————————————————————推荐美食
@@ -243,7 +211,7 @@
     recommendedFoodToolBar.userInteractionEnabled = YES;
     [self.scrollView addSubview:recommendedFoodToolBar];
     [recommendedFoodToolBar mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(_detailLabel.mas_bottom).inset(20);
+        make.top.equalTo(detailLabel.mas_bottom).inset(20);
         make.left.equalTo(0);
         make.height.equalTo(18);
         make.width.equalTo(SCREEN_WIDTH);
@@ -252,7 +220,7 @@
     UILabel *recommendedFood = [[UILabel alloc]init];
     recommendedFood.text = @"推荐美食";
     recommendedFood.textColor = [UIColor blackColor];
-    [recommendedFood setFont:systemFont(16)];
+    [recommendedFood setFont:systemFont(15)];
     [recommendedFoodToolBar addSubview:recommendedFood];
     [recommendedFood mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(0);
@@ -261,50 +229,53 @@
         make.height.equalTo(18);
     }];
     
-    _moreFoodBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    [_moreFoodBtn setTitle:@"查看更多 >" forState:UIControlStateNormal];
-    [_moreFoodBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    [_moreFoodBtn.titleLabel setFont:systemFont(14)];
-    _moreFoodBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight & UIControlContentVerticalAlignmentBottom;
-    [_moreFoodBtn addTarget:self action:@selector(moreFoodBtnClicked) forControlEvents:UIControlEventTouchUpInside];
-    [recommendedFoodToolBar addSubview:_moreFoodBtn];
-    [_moreFoodBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+    UIButton *moreFoodBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    [moreFoodBtn setTitle:@"查看更多" forState:UIControlStateNormal];
+    [moreFoodBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    [moreFoodBtn.titleLabel setFont:FONT_SMALL];
+    moreFoodBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight & UIControlContentVerticalAlignmentBottom;
+    [moreFoodBtn addTarget:self action:@selector(moreFoodBtnClicked) forControlEvents:UIControlEventTouchUpInside];
+    [recommendedFoodToolBar addSubview:moreFoodBtn];
+    [moreFoodBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.bottom.equalTo(0);
         make.right.equalTo(-BIANJU);
         make.width.equalTo(150);
         make.height.equalTo(18);
     }];
     
-    _moreFoodImageView2 = [[UIImageView alloc] init];
-    _moreFoodImageView2.contentMode = UIViewContentModeScaleAspectFill;
-    _moreFoodImageView2.layer.masksToBounds = YES;
-    _moreFoodImageView2.userInteractionEnabled = YES;
-    [self.scrollView addSubview:_moreFoodImageView2];
-    [_moreFoodImageView2 mas_makeConstraints:^(MASConstraintMaker *make) {
+    UIImageView *moreFoodImageView2 = [[UIImageView alloc] init];
+    moreFoodImageView2.contentMode = UIViewContentModeScaleAspectFill;
+    moreFoodImageView2.layer.masksToBounds = YES;
+    moreFoodImageView2.userInteractionEnabled = YES;
+    [moreFoodImageView2 sd_setImageWithURL:[NSURL URLWithString:[_recommend objectAtIndex:1]]];
+    [self.scrollView addSubview:moreFoodImageView2];
+    [moreFoodImageView2 mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerX.equalTo(0);
         make.top.equalTo(recommendedFoodToolBar.mas_bottom).inset(5);
         make.height.width.equalTo((SCREEN_WIDTH - 30 - BIANJU*2)/3);
     }];
     
     
-    _moreFoodImageView1 = [[UIImageView alloc] init];
-    _moreFoodImageView1.contentMode = UIViewContentModeScaleAspectFill;
-    _moreFoodImageView1.layer.masksToBounds = YES;
-    _moreFoodImageView1.userInteractionEnabled = YES;
-    [self.scrollView addSubview:_moreFoodImageView1];
-    [_moreFoodImageView1 mas_makeConstraints:^(MASConstraintMaker *make) {
+    UIImageView *moreFoodImageView1 = [[UIImageView alloc] init];
+    moreFoodImageView1.contentMode = UIViewContentModeScaleAspectFill;
+    moreFoodImageView1.layer.masksToBounds = YES;
+    moreFoodImageView1.userInteractionEnabled = YES;
+    [moreFoodImageView1 sd_setImageWithURL:[NSURL URLWithString:[_recommend objectAtIndex:0]]];
+    [self.scrollView addSubview:moreFoodImageView1];
+    [moreFoodImageView1 mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(BIANJU);
         make.top.equalTo(recommendedFoodToolBar.mas_bottom).inset(5);
         make.height.width.equalTo((SCREEN_WIDTH - 30 - BIANJU*2)/3);
     }];
     
-    _moreFoodImageView3 = [[UIImageView alloc] init];
-    _moreFoodImageView3.contentMode = UIViewContentModeScaleAspectFill;
-    _moreFoodImageView3.layer.masksToBounds = YES;
-    _moreFoodImageView3.userInteractionEnabled = YES;
-    [self.scrollView addSubview:_moreFoodImageView3];
-    [_moreFoodImageView3 mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(_moreFoodImageView2.mas_right).inset(15);
+    UIImageView *moreFoodImageView3 = [[UIImageView alloc] init];
+    moreFoodImageView3.contentMode = UIViewContentModeScaleAspectFill;
+    moreFoodImageView3.layer.masksToBounds = YES;
+    moreFoodImageView3.userInteractionEnabled = YES;
+    [moreFoodImageView3 sd_setImageWithURL:[NSURL URLWithString:[_recommend objectAtIndex:2]]];
+    [self.scrollView addSubview:moreFoodImageView3];
+    [moreFoodImageView3 mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(moreFoodImageView2.mas_right).inset(15);
         make.top.equalTo(recommendedFoodToolBar.mas_bottom).inset(5);
         make.height.width.equalTo((SCREEN_WIDTH - 30 - BIANJU*2)/3);
     }];
@@ -314,7 +285,7 @@
     morePhotoToolBar.userInteractionEnabled = YES;
     [self.scrollView addSubview:morePhotoToolBar];
     [morePhotoToolBar mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(_moreFoodImageView2.mas_bottom).inset(15);
+        make.top.equalTo(moreFoodImageView2.mas_bottom).inset(15);
         make.left.equalTo(0);
         make.height.equalTo(22);
         make.width.equalTo(SCREEN_WIDTH);
@@ -323,7 +294,7 @@
     UILabel *morePhotoLabel = [[UILabel alloc]init];
     morePhotoLabel.text = @"店内环境";
     morePhotoLabel.textColor = [UIColor blackColor];
-    [morePhotoLabel setFont:systemFont(16)];
+    [morePhotoLabel setFont:systemFont(15)];
     [morePhotoToolBar addSubview:morePhotoLabel];
     [morePhotoLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(0);
@@ -332,58 +303,61 @@
         make.height.equalTo(18);
     }];
     
-    _morePhotoBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    [_morePhotoBtn setTitle:@"查看更多 >" forState:UIControlStateNormal];
-    [_morePhotoBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    [_morePhotoBtn.titleLabel setFont:systemFont(14)];
-    _morePhotoBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight & UIControlContentVerticalAlignmentBottom;
-    [_morePhotoBtn addTarget:self action:@selector(morePhotoBtnClicked) forControlEvents:UIControlEventTouchUpInside];
-    [morePhotoToolBar addSubview:_morePhotoBtn];
-    [_morePhotoBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+    UIButton *morePhotoBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    [morePhotoBtn setTitle:@"查看更多" forState:UIControlStateNormal];
+    [morePhotoBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    [morePhotoBtn.titleLabel setFont:FONT_SMALL];
+    morePhotoBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight & UIControlContentVerticalAlignmentBottom;
+    [morePhotoBtn addTarget:self action:@selector(morePhotoBtnClicked) forControlEvents:UIControlEventTouchUpInside];
+    [morePhotoToolBar addSubview:morePhotoBtn];
+    [morePhotoBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.bottom.equalTo(0);
         make.right.equalTo(-BIANJU);
         make.width.equalTo(150);
         make.height.equalTo(18);
     }];
     
-    _morePhotoImageView2 = [[UIImageView alloc] init];
-    _morePhotoImageView2.contentMode = UIViewContentModeScaleAspectFill;
-    _morePhotoImageView2.layer.masksToBounds = YES;
-    _morePhotoImageView2.userInteractionEnabled = YES;
-    [self.scrollView addSubview:_morePhotoImageView2];
-    [_morePhotoImageView2 mas_makeConstraints:^(MASConstraintMaker *make) {
+    UIImageView *morePhotoImageView2 = [[UIImageView alloc] init];
+    morePhotoImageView2.contentMode = UIViewContentModeScaleAspectFill;
+    morePhotoImageView2.layer.masksToBounds = YES;
+    morePhotoImageView2.userInteractionEnabled = YES;
+    [morePhotoImageView2 sd_setImageWithURL:[NSURL URLWithString:[_environment objectAtIndex:1]]];
+    [self.scrollView addSubview:morePhotoImageView2];
+    [morePhotoImageView2 mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerX.equalTo(0);
         make.top.equalTo(morePhotoToolBar.mas_bottom).inset(5);
         make.height.width.equalTo((SCREEN_WIDTH - 30 - BIANJU*2)/3);
     }];
     
-    _morePhotoImageView1 = [[UIImageView alloc] init];
-    _morePhotoImageView1.contentMode = UIViewContentModeScaleAspectFill;
-    _morePhotoImageView1.layer.masksToBounds = YES;
-    _morePhotoImageView1.userInteractionEnabled = YES;
-    [self.scrollView addSubview:_morePhotoImageView1];
-    [_morePhotoImageView1 mas_makeConstraints:^(MASConstraintMaker *make) {
+    UIImageView *morePhotoImageView1 = [[UIImageView alloc] init];
+    morePhotoImageView1.contentMode = UIViewContentModeScaleAspectFill;
+    morePhotoImageView1.layer.masksToBounds = YES;
+    morePhotoImageView1.userInteractionEnabled = YES;
+    [morePhotoImageView1 sd_setImageWithURL:[NSURL URLWithString:[_environment objectAtIndex:0]]];
+    [self.scrollView addSubview:morePhotoImageView1];
+    [morePhotoImageView1 mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(BIANJU);
         make.top.equalTo(morePhotoToolBar.mas_bottom).inset(5);
         make.height.width.equalTo((SCREEN_WIDTH - 30 - BIANJU*2)/3);
     }];
     
-    _morePhotoImageView3 = [[UIImageView alloc] init];
-    _morePhotoImageView3.contentMode = UIViewContentModeScaleAspectFill;
-    _morePhotoImageView3.layer.masksToBounds = YES;
-    _morePhotoImageView3.userInteractionEnabled = YES;
-    [self.scrollView addSubview:_morePhotoImageView3];
-    [_morePhotoImageView3 mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(_morePhotoImageView2.mas_right).inset(15);
+    UIImageView *morePhotoImageView3 = [[UIImageView alloc] init];
+    morePhotoImageView3.contentMode = UIViewContentModeScaleAspectFill;
+    morePhotoImageView3.layer.masksToBounds = YES;
+    morePhotoImageView3.userInteractionEnabled = YES;
+    [self.scrollView addSubview:morePhotoImageView3];
+    [morePhotoImageView3 sd_setImageWithURL:[NSURL URLWithString:[_environment objectAtIndex:2]]];
+    [morePhotoImageView3 mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(morePhotoImageView2.mas_right).inset(15);
         make.top.equalTo(morePhotoToolBar.mas_bottom).inset(5);
         make.height.width.equalTo((SCREEN_WIDTH - 30 - BIANJU*2)/3);
     }];
     
-    UIImage *lineImage = [UIImage imageWithColor:[UIColor blackColor] size:CGSizeMake(SCREEN_WIDTH - BIANJU*2, 3.0)];
+    UIImage *lineImage = [UIImage imageWithColor:[UIColor blackColor] size:CGSizeMake(SCREEN_WIDTH - BIANJU*2, 2.5)];
     UIImageView *lineImageView = [[UIImageView alloc]initWithImage:lineImage];
     [self.scrollView addSubview:lineImageView];
     [lineImageView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(_morePhotoImageView1.bottom).inset(35);
+        make.top.equalTo(morePhotoImageView1.bottom).inset(35);
         make.left.equalTo(BIANJU);
         make.height.equalTo(3);
         make.width.equalTo(SCREEN_WIDTH - BIANJU*2);
@@ -394,7 +368,7 @@
     mapLabel.textColor = [UIColor blackColor];
     mapLabel.textAlignment = NSTextAlignmentCenter;
     mapLabel.backgroundColor = [UIColor whiteColor];
-    [mapLabel setFont:systemFont(18)];
+    [mapLabel setFont:systemFont(16)];
     [self.scrollView addSubview:mapLabel];
     [mapLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerX.equalTo(lineImageView.mas_centerX);
@@ -415,13 +389,13 @@
     _mapView.userInteractionEnabled = YES;
     _mapView.delegate=self;
     
-    _currentLocBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    _currentLocBtn.userInteractionEnabled = YES;
-    [_currentLocBtn setImage:[UIImage imageNamed:@"map"] forState:UIControlStateNormal];
-    [_currentLocBtn setImage:[UIImage imageNamed:@"map_select"] forState:UIControlStateHighlighted];
-    [_currentLocBtn addTarget:self action:@selector(currentLocBtnClicked) forControlEvents:UIControlEventTouchUpInside];
-    [_mapView addSubview:_currentLocBtn];
-    [_currentLocBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+    UIButton *currentLocBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    currentLocBtn.userInteractionEnabled = YES;
+    [currentLocBtn setImage:[UIImage imageNamed:@"map"] forState:UIControlStateNormal];
+    [currentLocBtn setImage:[UIImage imageNamed:@"map_select"] forState:UIControlStateHighlighted];
+    [currentLocBtn addTarget:self action:@selector(currentLocBtnClicked) forControlEvents:UIControlEventTouchUpInside];
+    [_mapView addSubview:currentLocBtn];
+    [currentLocBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.width.height.equalTo(20);
         make.bottom.equalTo(_mapView.mas_bottom).inset(5);
         make.right.equalTo(_mapView.mas_right).inset(5);
@@ -442,7 +416,7 @@
     circleLabel.textColor = [UIColor blackColor];
     circleLabel.textAlignment = NSTextAlignmentCenter;
     circleLabel.backgroundColor = [UIColor whiteColor];
-    [circleLabel setFont:systemFont(18)];
+    [circleLabel setFont:systemFont(16)];
     [self.scrollView addSubview:circleLabel];
     [circleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerX.equalTo(lineImageView2.mas_centerX);
@@ -452,26 +426,55 @@
     }];
     
     _scrollView.contentSize = CGSizeMake(SCREEN_WIDTH, 1300);
+    
+    UITapGestureRecognizer *tapGestureRecognizer1 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(scanBigImageClick1:)];
+    [morePhotoImageView1 addGestureRecognizer:tapGestureRecognizer1];
+    UITapGestureRecognizer *tapGestureRecognizer2 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(scanBigImageClick1:)];
+    [morePhotoImageView2 addGestureRecognizer:tapGestureRecognizer2];
+    UITapGestureRecognizer *tapGestureRecognizer3 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(scanBigImageClick1:)];
+    [morePhotoImageView3 addGestureRecognizer:tapGestureRecognizer3];
+    UITapGestureRecognizer *tapGestureRecognizer4 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(scanBigImageClick1:)];
+    [moreFoodImageView1 addGestureRecognizer:tapGestureRecognizer4];
+    UITapGestureRecognizer *tapGestureRecognizer5 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(scanBigImageClick1:)];
+    [moreFoodImageView2 addGestureRecognizer:tapGestureRecognizer5];
+    UITapGestureRecognizer *tapGestureRecognizer6 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(scanBigImageClick1:)];
+    [moreFoodImageView3 addGestureRecognizer:tapGestureRecognizer6];
 }
 
-- (void)setupDetail {
-    _moreFoodImageView1.image = [_ImageArr objectAtIndex:0];
-    _moreFoodImageView2.image = [_ImageArr objectAtIndex:1];
-    _moreFoodImageView3.image = [_ImageArr objectAtIndex:2];
+- (void)getShopDetail:(NSDictionary *)valueDic {
+    self.shopDetailModel = [[ShopDetailModel alloc] initWithDictionary:valueDic error:nil];
+    self.business_hours = self.shopDetailModel.shopdes.business_hours;
+    self.name        = self.shopDetailModel.shopdes.name;
+    self.classify    = self.shopDetailModel.shopdes.classify;
+    self.avecon      = self.shopDetailModel.shopdes.avecon;
+    self.introduce   = self.shopDetailModel.shopdes.introduce;
+    self.longitude   = self.shopDetailModel.shopdes.longitude;
+    self.latitude    = self.shopDetailModel.shopdes.latitude;
+    self.phone       = self.shopDetailModel.shopdes.phone;
+    self.grade       = self.shopDetailModel.shopdes.grade;
+    self.address     = self.shopDetailModel.shopdes.address;
+    self.status      = self.shopDetailModel.shopdes.status;
+    self.reserve     = self.shopDetailModel.shopdes.reserve;
+    self.time        = self.shopDetailModel.shopdes.time;
+    self.surface     = self.shopDetailModel.surface;
+    self.recommend   = self.shopDetailModel.recommend;
+    self.environment = self.shopDetailModel.environment;
+    if (self.name) {
+    [self setupScrollView];
+    [self setupMapDetail];
+    [self configAppointmentToolBar];
+    }
+}
+
+//TODO：圈子
+- (void)getCircleArr:(NSDictionary *)valueDic {
     
-    _morePhotoImageView1.image = [_ImageArr objectAtIndex:0];
-    _morePhotoImageView2.image = [_ImageArr objectAtIndex:1];
-    _morePhotoImageView3.image = [_ImageArr objectAtIndex:2];
 }
 
 -(void)scanBigImageClick1:(UITapGestureRecognizer *)tap{
     NSLog(@"点击图片");
     UIImageView *clickedImageView = (UIImageView *)tap.view;
     [XWScanImage scanBigImageWithImageView:clickedImageView];
-}
-
-- (void)setupArr {
-    _ImageArr = [[NSArray alloc] initWithObjects:[UIImage imageNamed:@"text1"], [UIImage imageNamed:@"text2"], [UIImage imageNamed:@"text3"], nil];
 }
 
 - (void)configAppointmentToolBar {
@@ -505,7 +508,7 @@
     UILabel *consumptionLabel = [[UILabel alloc] init];
     consumptionLabel.text = @"人均消费 ：";
     consumptionLabel.textColor = [UIColor darkGrayColor];
-    [consumptionLabel setFont:systemFont(14)];
+    [consumptionLabel setFont:FONT_SMALL];
     [_appointmentToolBar addSubview:consumptionLabel];
     [consumptionLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(20);
@@ -527,9 +530,9 @@
     }];
     
     _payLabel = [[UILabel alloc] init];
-    _payLabel.text = @"80/人";
+    _payLabel.text = [NSString stringWithFormat:@"%@/人",_avecon];
     _payLabel.textColor = [UIColor darkGrayColor];
-    [_payLabel setFont:systemFont(14)];
+    [_payLabel setFont:FONT_SMALL];
     [_appointmentToolBar addSubview:_payLabel];
     [_payLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(consumptionLabel.mas_right);
@@ -540,9 +543,9 @@
     
     
     _telBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    [_telBtn setTitle:@"18888888888" forState:UIControlStateNormal];
+    [_telBtn setTitle:_phone forState:UIControlStateNormal];
     [_telBtn setTitleColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
-    [_telBtn.titleLabel setFont:systemFont(14)];
+    [_telBtn.titleLabel setFont:FONT_SMALL];
     _telBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
     [_telBtn addTarget:self action:@selector(telBtnClicked) forControlEvents:UIControlEventTouchUpInside];
     [_appointmentToolBar addSubview:_telBtn];
@@ -567,7 +570,7 @@
         make.height.equalTo(20);
     }];
      //设置展示的星星数量
-     self.tggStarEvaView.starCount = 4;
+     self.tggStarEvaView.starCount = [_grade intValue];
      //星星之间的间距，默认0.5
      self.tggStarEvaView.spacing = 0.1;
      //星星的点击事件使能,默认YES
@@ -578,7 +581,7 @@
 - (void)setupMapDetail {
     //初始化设置地图中心点坐标需要异步加入到主队列
     dispatch_async(dispatch_get_main_queue(), ^{
-        [_mapView setCenterCoordinate:CLLocationCoordinate2DMake(39.908862,116.397393)
+        [_mapView setCenterCoordinate:CLLocationCoordinate2DMake([_latitude floatValue],[_longitude floatValue])
                             zoomLevel:11.01 animated:NO];
     });
     //地图平移，默认YES
@@ -592,14 +595,33 @@
     
     //定义pointAnnotation
     QPointAnnotation *shopLocation = [[QPointAnnotation alloc] init];
-    shopLocation.title = @"天安门";
-    shopLocation.subtitle = @"北京市东城区东长安街";
-    shopLocation.coordinate = CLLocationCoordinate2DMake(39.908862,116.397393);
+    shopLocation.title = _name;
+    shopLocation.subtitle = _address;
+    shopLocation.coordinate = CLLocationCoordinate2DMake([_latitude floatValue],[_longitude floatValue]);
     _annotations = [NSArray arrayWithObjects:shopLocation, nil];
     //向mapview添加annotation
     [_mapView addAnnotation:shopLocation];
     [_mapView viewForAnnotation:[_annotations objectAtIndex:0]].selected = YES;
 }
+
+
+/**
+ label添加字符串
+
+ @param string label.text
+ @param lineSpace 行间距
+ @return 返回添加行间距后的字
+ */
+-(NSAttributedString *)getAttributedStringWithString:(NSString *)string lineSpace:(CGFloat)lineSpace {
+    NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:string];
+    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+    paragraphStyle.lineSpacing = lineSpace; // 调整行间距
+    NSRange range = NSMakeRange(0, [string length]);
+    [attributedString addAttribute:NSFontAttributeName value:FONT_SMALL range:range];
+    [attributedString addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:range];
+    return attributedString;
+}
+
 
 - (void)moreFoodBtnClicked {
     
@@ -615,7 +637,7 @@
 
 - (void)currentLocBtnClicked {
     dispatch_async(dispatch_get_main_queue(), ^{
-        [_mapView setCenterCoordinate:CLLocationCoordinate2DMake(39.908862,116.397393)
+        [_mapView setCenterCoordinate:CLLocationCoordinate2DMake([_latitude floatValue],[_longitude floatValue])
                             zoomLevel:11.01 animated:NO];
     });
 }
