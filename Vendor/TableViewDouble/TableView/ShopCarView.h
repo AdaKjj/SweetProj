@@ -8,7 +8,14 @@
 
 #import <UIKit/UIKit.h>
 #import "ShopCarModel.h"
+
+typedef void (^ShopCarOperationBlock) (NSIndexPath *indexPath,BOOL plus);
+
+
 @interface ShopCarView : UIView
 
 @property (nonatomic) NSMutableArray<ShopCarModel *> *shopCarArr;
+
+@property (nonatomic,copy) ShopCarOperationBlock operationBlock;
+
 @end

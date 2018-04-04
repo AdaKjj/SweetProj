@@ -93,18 +93,18 @@
 
 - (void)clickPuls:(UIButton *)btn
 {
-    self.count += 1;
-    self.countLabel.text = [NSString stringWithFormat:@"%d",_count];
-    self.operationBlock(self.foodId,YES);
-    NSDictionary *dic = [NSDictionary dictionaryWithObject:@"" forKey:@""];
-//    [[NSNotificationCenter defaultCenter] postNotificationName:@"addFood" object:self userInfo:<#(nullable NSDictionary *)#>]
+    int count = [_countLabel.text intValue];
+    count++;
+    self.countLabel.text = [NSString stringWithFormat:@"%d",count];
+    self.operationBlock(self.indexPath,YES);
 }
 - (void)clickMin:(UIButton *)btn
 {
-    if (_count > 0) {
-        self.count -= 1;
-        self.countLabel.text = [NSString stringWithFormat:@"%d",_count];
-        self.operationBlock(self.foodId,NO);
+    int count = [_countLabel.text intValue];
+    if (count > 0) {
+        count--;
+        self.countLabel.text = [NSString stringWithFormat:@"%d",count];
+        self.operationBlock(self.indexPath,NO);
     }
 }
 

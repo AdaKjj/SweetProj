@@ -22,7 +22,6 @@
         
         self.backgroundColor = [UIColor colorWithWhite:0.f alpha:0.3];
         
-
         UIControl *baseControl = [[UIControl alloc] initWithFrame:self.bounds];
         baseControl.backgroundColor = [UIColor clearColor];
         [baseControl addTarget:self action:@selector(onTouchDismiss) forControlEvents:UIControlEventTouchUpInside];
@@ -72,15 +71,6 @@
     return _shopCarArr.count;
 }
 
-//- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(nonnull NSIndexPath *)indexPath {
-//
-//    MyCommentCell *cell = (MyCommentCell *)[tableView cellForRowAtIndexPath:indexPath];
-//    [tableView deselectRowAtIndexPath:indexPath animated:NO];
-//    FoodDetailVC *detailVC = [[FoodDetailVC alloc] init];
-//    [self.navigationController pushViewController:detailVC animated:YES];
-//
-//}
-
 
 //配置特定行中的单元格
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -93,7 +83,15 @@
         cell.name.text = [_shopCarArr objectAtIndex:indexPath.row].name;
         cell.countLabel.text = [NSString stringWithFormat:@"%ld",[_shopCarArr objectAtIndex:indexPath.row].count];
         cell.price.text = [NSString stringWithFormat:@"%.2f",[_shopCarArr objectAtIndex:indexPath.row].min_price];
+        cell.indexPath = [_shopCarArr objectAtIndex:indexPath.row].indexPath;
+        
+        cell.operationBlock = ^(NSIndexPath *indexPath, BOOL plus) {
+            if (self.operationBlock) {
+                self.operationBlock(indexPath, plus);
+            }
+        };
     }
+    [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
     return cell;
 }
 

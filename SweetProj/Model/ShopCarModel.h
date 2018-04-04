@@ -10,9 +10,10 @@
 
 @interface ShopCarModel : NSObject
 
-@property(nonatomic) int orderid;
-@property(nonatomic,copy) NSString *name;
-@property(nonatomic) float min_price;
+@property (nonatomic) int orderid;
+@property (nonatomic,copy) NSString *name;
+@property (nonatomic) float min_price;
+@property (nonatomic) NSIndexPath *indexPath;
 
 @property (nonatomic) NSInteger count;
 

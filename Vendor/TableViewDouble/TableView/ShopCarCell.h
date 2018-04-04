@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-typedef void (^ShopCarOperationBlock) (NSString *foodId,BOOL plus);
+typedef void (^OperationBlock) (NSIndexPath *indexPath,BOOL plus);
 
 @interface ShopCarCell : UITableViewCell
 
@@ -18,8 +18,8 @@ typedef void (^ShopCarOperationBlock) (NSString *foodId,BOOL plus);
 @property (nonatomic) UILabel *price;
 @property (nonatomic) UIButton *addBtn;
 @property (nonatomic) UIButton *minBtn;
-
+@property (nonatomic) NSIndexPath *indexPath;
 @property (nonatomic) int count;
 
-@property (nonatomic,copy) ShopCarOperationBlock operationBlock;
+@property (nonatomic,copy) OperationBlock operationBlock;
 @end

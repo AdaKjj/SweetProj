@@ -33,6 +33,7 @@ static float kLeftTableViewWidth = 100.f;
 @property (nonatomic) UILabel *priceLabel;
 @property (nonatomic) UIButton *verbBtn;
 @property (nonatomic) UILabel *countLabel;
+@property (nonatomic) int shopcarCount;
 @property (nonatomic) float price;
 
 @property (nonatomic) NSMutableArray *shopCarArr;
@@ -54,6 +55,7 @@ static float kLeftTableViewWidth = 100.f;
 
     _selectIndex = 0;
     _isScrollDown = YES;
+    _shopcarCount = 0;
     
     MenuManager *manager = [[MenuManager alloc] init];
     manager.tbVC = self;
@@ -71,7 +73,7 @@ static float kLeftTableViewWidth = 100.f;
     [shopCarBtn addTarget:self action:@selector(onTouchShopCar) forControlEvents:UIControlEventTouchUpInside];
     
     _countLabel = [[UILabel alloc] init];
-    _countLabel.text = @"0";
+    _countLabel.text = [NSString stringWithFormat:@"%d",_shopcarCount];
     _countLabel.backgroundColor = [UIColor redColor];
     _countLabel.layer.cornerRadius = 6;
     _countLabel.textColor = [UIColor whiteColor];
@@ -126,7 +128,15 @@ static float kLeftTableViewWidth = 100.f;
 - (void)onTouchShopCar {
     ShopCarView *shopCarView = [[ShopCarView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
     shopCarView.shopCarArr = _shopCarArr;
-    //shopCarView.
+    shopCarView.operationBlock = ^(NSIndexPath *indexPath, BOOL plus) {
+        RightTableViewCell * cell = (RightTableViewCell *)[self.rightTableView cellForRowAtIndexPath:indexPath];
+        if (plus) {
+            [cell.addBtn sendActionsForControlEvents:UIControlEventTouchUpInside];
+        }
+        else {
+            [cell.minBtn sendActionsForControlEvents:UIControlEventTouchUpInside];
+        }
+    };
     [[UIApplication sharedApplication].keyWindow addSubview:shopCarView];
 }
 
@@ -356,14 +366,16 @@ static float kLeftTableViewWidth = 100.f;
             if (plus) {
                 _price += itemModel.univalence;
                 _priceLabel.text = [NSString stringWithFormat:@" 总计：¥%.2f",_price];
+                _shopcarCount++;
+                _countLabel.text = [NSString stringWithFormat:@"%d",_shopcarCount];
                 if (number == 1) {
                     ShopCarModel *shopModal = [ShopCarModel new];
                     shopModal.orderid = itemModel.item_id;
                     shopModal.name = itemModel.name;
                     shopModal.min_price = itemModel.univalence;
                     shopModal.count = number;
+                    shopModal.indexPath = indexPath;
                     [_shopCarArr addObject:shopModal];
-                    _countLabel.text = [NSString stringWithFormat:@"%lu",(unsigned long)[_shopCarArr count]];
                 }
                 else {
                     for (NSInteger i=0; i<_shopCarArr.count; i++) {
@@ -371,7 +383,6 @@ static float kLeftTableViewWidth = 100.f;
                         if (shopModal.orderid == itemModel.item_id) {
                             shopModal.count = number;
                             [_shopCarArr replaceObjectAtIndex:i withObject:shopModal];
-                            _countLabel.text = [NSString stringWithFormat:@"%lu",(unsigned long)[_shopCarArr count]];
                         }
                     }
                 }
@@ -379,12 +390,14 @@ static float kLeftTableViewWidth = 100.f;
             else {
                 _price -= itemModel.univalence;
                 _priceLabel.text = [NSString stringWithFormat:@" 总计：¥%.2f",_price];
+                _shopcarCount--;
+                _countLabel.text = [NSString stringWithFormat:@"%d",_shopcarCount];
                 if (number == 0) {
                     for (NSInteger i=0; i<_shopCarArr.count; i++) {
                         ShopCarModel *shopModal = _shopCarArr[i];
                         if (shopModal.orderid == itemModel.item_id) {
-                            [_shopCarArr removeObjectAtIndex:i];
-                            _countLabel.text = [NSString stringWithFormat:@"%lu",(unsigned long)[_shopCarArr count]];
+                            int count1 = [_countLabel.text intValue];
+                            _countLabel.text = [NSString stringWithFormat:@"%d",count1--];
                         }
                     }
                 }
@@ -394,7 +407,8 @@ static float kLeftTableViewWidth = 100.f;
                         if (shopModal.orderid == itemModel.item_id) {
                             shopModal.count = number;
                             [_shopCarArr replaceObjectAtIndex:i withObject:shopModal];
-                            _countLabel.text = [NSString stringWithFormat:@"%lu",(unsigned long)[_shopCarArr count]];
+                            int count1 = [_countLabel.text intValue];
+                            _countLabel.text = [NSString stringWithFormat:@"%d",count1--];
                         }
                     }
                 }
