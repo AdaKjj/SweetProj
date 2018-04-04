@@ -9,10 +9,8 @@
 #import "RightTableViewCell.h"
 #import "CategoryModel.h"
 
-
+#import "OSSManager.h"
 @interface RightTableViewCell ()
-
-
 
 @end
 
@@ -103,13 +101,17 @@
 - (void)setModel:(ItemModel *)model {
     _model = model;
     self.nameLabel.text = model.name;
+    self.priceLabel.text = [NSString stringWithFormat:@"%.2f",model.univalence];
+    self.imageV.image = [UIImage imageWithData:model.photoData];
+    self.countLabel.text = [NSString stringWithFormat:@"%d",[model.count intValue]];
     
+    NSLog(@"个数是啊啊啊%d",[model.count intValue]);
 }
 
 - (void)layoutSubviews {
     [super layoutSubviews];
     
-    _countt = (int)self.model.count;
+    _countt = [self.model.count intValue];
     _countLabel.text = [NSString stringWithFormat:@"%d",_countt];
 }
 

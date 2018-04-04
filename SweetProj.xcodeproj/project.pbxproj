@@ -151,6 +151,8 @@
 		E734425B2073645B00DB3B46 /* SessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E734425A2073645B00DB3B46 /* SessionManager.m */; };
 		E734425E207373B400DB3B46 /* MenuManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E734425D207373B400DB3B46 /* MenuManager.m */; };
 		E734426120737C0F00DB3B46 /* MenuModel.m in Sources */ = {isa = PBXBuildFile; fileRef = E734426020737C0F00DB3B46 /* MenuModel.m */; };
+		E7344267207477AE00DB3B46 /* OSSManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E7344266207477AE00DB3B46 /* OSSManager.m */; };
+		E734426A20748C5300DB3B46 /* OSSSTSModel.m in Sources */ = {isa = PBXBuildFile; fileRef = E734426920748C5300DB3B46 /* OSSSTSModel.m */; };
 		E734EF15206A82C6000E7E0B /* ShopCarModel.m in Sources */ = {isa = PBXBuildFile; fileRef = E734EF14206A82C6000E7E0B /* ShopCarModel.m */; };
 		E736C925203E969A00DA24E1 /* TableViewCellItem.m in Sources */ = {isa = PBXBuildFile; fileRef = E736C924203E969A00DA24E1 /* TableViewCellItem.m */; };
 		E736C928203EA17500DA24E1 /* next_arrow_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E736C926203EA17500DA24E1 /* next_arrow_icon@2x.png */; };
@@ -541,6 +543,10 @@
 		E734425D207373B400DB3B46 /* MenuManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MenuManager.m; sourceTree = "<group>"; };
 		E734425F20737C0F00DB3B46 /* MenuModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MenuModel.h; sourceTree = "<group>"; };
 		E734426020737C0F00DB3B46 /* MenuModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MenuModel.m; sourceTree = "<group>"; };
+		E7344265207477AE00DB3B46 /* OSSManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OSSManager.h; sourceTree = "<group>"; };
+		E7344266207477AE00DB3B46 /* OSSManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OSSManager.m; sourceTree = "<group>"; };
+		E734426820748C5300DB3B46 /* OSSSTSModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OSSSTSModel.h; sourceTree = "<group>"; };
+		E734426920748C5300DB3B46 /* OSSSTSModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OSSSTSModel.m; sourceTree = "<group>"; };
 		E734EF13206A82C6000E7E0B /* ShopCarModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ShopCarModel.h; sourceTree = "<group>"; };
 		E734EF14206A82C6000E7E0B /* ShopCarModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ShopCarModel.m; sourceTree = "<group>"; };
 		E736C923203E969900DA24E1 /* TableViewCellItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TableViewCellItem.h; sourceTree = "<group>"; };
@@ -776,6 +782,8 @@
 				E734EF14206A82C6000E7E0B /* ShopCarModel.m */,
 				E734425F20737C0F00DB3B46 /* MenuModel.h */,
 				E734426020737C0F00DB3B46 /* MenuModel.m */,
+				E734426820748C5300DB3B46 /* OSSSTSModel.h */,
+				E734426920748C5300DB3B46 /* OSSSTSModel.m */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -1620,6 +1628,8 @@
 				E734425A2073645B00DB3B46 /* SessionManager.m */,
 				E734425C207373B400DB3B46 /* MenuManager.h */,
 				E734425D207373B400DB3B46 /* MenuManager.m */,
+				E7344265207477AE00DB3B46 /* OSSManager.h */,
+				E7344266207477AE00DB3B46 /* OSSManager.m */,
 			);
 			path = Manager;
 			sourceTree = "<group>";
@@ -1948,6 +1958,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E734426A20748C5300DB3B46 /* OSSSTSModel.m in Sources */,
 				E7CDB47C20625E79008683C5 /* JXTAlertView.m in Sources */,
 				E713C43A201880580037A4CA /* JSONHTTPClient.m in Sources */,
 				E713C438201880580037A4CA /* JSONModelClassProperty.m in Sources */,
@@ -2036,6 +2047,7 @@
 				E7EB2BC720119B37002B4A93 /* TggStarEvaluationView.m in Sources */,
 				E7202E261FC47F6C00E78F4A /* ConfirmPwdVC.m in Sources */,
 				E7323F201FFE2331000F802B /* RightTableViewCell.m in Sources */,
+				E7344267207477AE00DB3B46 /* OSSManager.m in Sources */,
 				E7323ED41FFE12F5000F802B /* ReservationInfoVC.m in Sources */,
 				E738397B202193350042275B /* ConfirmReservationVC.m in Sources */,
 				E7323F1F1FFE2331000F802B /* LeftTableViewCell.m in Sources */,

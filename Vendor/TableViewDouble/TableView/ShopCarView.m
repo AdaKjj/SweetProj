@@ -39,6 +39,7 @@
         self.tableView.dataSource = self;
         self.tableView.delegate = self;
         [self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleSingleLine];
+        self.tableView.tableFooterView = [[UIView alloc]initWithFrame:CGRectZero];
         self.tableView.separatorColor = [UIColor grayColor];
         self.tableView.separatorInset = UIEdgeInsetsMake(0,15, 0, 15);// 设置端距，这里表示separator离左边和右边均80像素
         [self addSubview: self.tableView];

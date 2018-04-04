@@ -10,7 +10,7 @@
 #import "TableViewController.h"
 #import "SessionManager.h"
 
-@interface MenuManager : NSObject
+@interface MenuManager : NSObject <NSURLConnectionDataDelegate>
 
 @property (nonatomic) TableViewController *tbVC;
 @property (nonatomic) NSString *merid;

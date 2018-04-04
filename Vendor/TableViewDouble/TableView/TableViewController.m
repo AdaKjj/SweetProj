@@ -15,6 +15,7 @@
 #import "UITableViewCell+seperatorInset.h"
 #import "ReservationInfoVC.h"
 #import "MenuManager.h"
+#import "OSSManager.h"
 
 #import "ShopCarView.h"
 
@@ -24,10 +25,14 @@ static float kLeftTableViewWidth = 100.f;
 
 @property (nonatomic, strong) NSMutableArray *categoryData;
 @property (nonatomic, strong) NSMutableArray *foodData;
+@property (nonatomic) NSMutableArray *photoArr;
+@property (nonatomic) int foodCount;
+
 @property (nonatomic, strong) UITableView *leftTableView;
 @property (nonatomic, strong) UITableView *rightTableView;
 @property (nonatomic) UILabel *priceLabel;
 @property (nonatomic) UIButton *verbBtn;
+@property (nonatomic) UILabel *countLabel;
 @property (nonatomic) float price;
 
 @property (nonatomic) NSMutableArray *shopCarArr;
@@ -64,6 +69,21 @@ static float kLeftTableViewWidth = 100.f;
     shopCarBtn.frame = CGRectMake(0, 0, 40, 22);
     [shopCarBtn setImage:[UIImage imageNamed:@"shopcar"] forState:UIControlStateNormal];
     [shopCarBtn addTarget:self action:@selector(onTouchShopCar) forControlEvents:UIControlEventTouchUpInside];
+    
+    _countLabel = [[UILabel alloc] init];
+    _countLabel.text = @"0";
+    _countLabel.backgroundColor = [UIColor redColor];
+    _countLabel.layer.cornerRadius = 6;
+    _countLabel.textColor = [UIColor whiteColor];
+    [_countLabel setFont:systemFont(10)];
+    _countLabel.textAlignment = NSTextAlignmentCenter;
+    _countLabel.layer.masksToBounds = YES;
+    [shopCarBtn addSubview:_countLabel];
+    [_countLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.right.equalTo(3);
+        make.top.equalTo(0);
+        make.width.height.equalTo(12);
+    }];
     
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:shopCarBtn];
     
@@ -182,6 +202,15 @@ static float kLeftTableViewWidth = 100.f;
     return _foodData;
 }
 
+- (NSMutableArray *)photoArr
+{
+    if (!_photoArr)
+    {
+        _photoArr = [NSMutableArray array];
+    }
+    return _photoArr;
+}
+
 - (UITableView *)leftTableView
 {
     if (!_leftTableView)
@@ -217,29 +246,56 @@ static float kLeftTableViewWidth = 100.f;
 - (void)getMenuDic:(NSDictionary *)jsonDic {
     self.menuModel = [[MenuModel alloc] initWithDictionary:jsonDic error:nil];
     
-    for (ItemListModel *model in _menuModel.item_list) {
-        [self.categoryData addObject:model];
-    }
+    _foodCount = 0;
+    OSSManager *manager = [OSSManager new];
     
-    for(int i=0; i<self.categoryData.count; i++) {
-        ItemListModel *listModel = self.categoryData[i];
-        NSMutableArray *listArr = [NSMutableArray array];
+    for(int i=0; i<[_menuModel.item_list count]; i++) {
+        ItemListModel *listModel = _menuModel.item_list[i];
+        
         for (int i=0; i<listModel.item.count; i++) {
             NSArray<ItemModel> *itemList = listModel.item;
             ItemModel *itemModel = itemList[i];
-            itemModel.count = 0;
-            [listArr addObject:itemModel];
+            [manager downloadImageWithName:itemModel.photo];
+            WEAKSELF;
+            manager.downloadBlock = ^(NSData *data) {
+                [weakSelf.photoArr addObject:data];
+                BOOL isEqual = (int)[_photoArr count] == _foodCount;
+                if (isEqual) {
+                    [self performSelectorOnMainThread:@selector(showCell) withObject:nil waitUntilDone:NO];
+                }
+            };
+            _foodCount++;
         }
-        [self.foodData addObject:listArr];
     }
+}
+
+- (void)showCell{
+        for (ItemListModel *model in _menuModel.item_list) {
+            [self.categoryData addObject:model];
+        }
+        int k = 0;
+        for(int i=0; i<self.categoryData.count; i++) {
+            ItemListModel *listModel = self.categoryData[i];
+            NSMutableArray *listArr = [NSMutableArray array];
+            for (int j=0; j<listModel.item.count; j++) {
+                NSArray<ItemModel> *itemList = listModel.item;
+                ItemModel *itemModel = itemList[j];
+                itemModel.photoData = _photoArr[k];
+                itemModel.count = [[NSNumber alloc] initWithInt:0];
+                [listArr addObject:itemModel];
+                k++;
+            }
+            [self.foodData addObject:listArr];
+        }
+
+        [_leftTableView reloadData];
+        [_rightTableView reloadData];
     
-    [_leftTableView reloadData];
-    [_rightTableView reloadData];
+        NSIndexPath * selIndex = [NSIndexPath indexPathForRow:0 inSection:0];
+        [_leftTableView selectRowAtIndexPath:selIndex animated:YES scrollPosition:UITableViewScrollPositionTop];
+        NSIndexPath * path = [NSIndexPath indexPathForItem:0 inSection:0];
+        [self tableView:self.leftTableView didSelectRowAtIndexPath:path];
     
-    NSIndexPath * selIndex = [NSIndexPath indexPathForRow:0 inSection:0];
-    [_leftTableView selectRowAtIndexPath:selIndex animated:YES scrollPosition:UITableViewScrollPositionTop];
-    NSIndexPath * path = [NSIndexPath indexPathForItem:0 inSection:0];
-    [self tableView:self.leftTableView didSelectRowAtIndexPath:path];
 }
 
 #pragma mark - TableView DataSource Delegate
@@ -286,18 +342,16 @@ static float kLeftTableViewWidth = 100.f;
         ItemModel *itemModel = self.foodData[indexPath.section][indexPath.row];
         
         cell.model = itemModel;
-        //[cell.imageV sd_setImageWithURL:[NSURL URLWithString:model.picture]];
-        cell.nameLabel.text = itemModel.name;
         
-        cell.countt = (int)itemModel.count;
-        cell.priceLabel.text = [NSString stringWithFormat:@"￥%@",@(itemModel.univalence)];
-        cell.countLabel.text = [NSString stringWithFormat:@"%d",[itemModel.count intValue]];
-        
+        WEAKSELF;
         cell.operationBlock = ^(NSInteger number, BOOL plus) {
             
-            self.itemListModel = self.menuModel.item_list[indexPath.section];
-            ItemModel *model2 = self.itemListModel.item[indexPath.row];
-            model2.count = [NSNumber numberWithInteger:number];
+            ItemModel *itemModel = weakSelf.foodData[indexPath.section][indexPath.row];
+            itemModel.count = [NSNumber numberWithInteger:number];
+            
+            [weakSelf.foodData[indexPath.section] replaceObjectAtIndex:indexPath.row withObject:itemModel];
+            
+            [self.rightTableView reloadRowsAtIndexPaths:[NSArray arrayWithObjects:indexPath,nil] withRowAnimation:UITableViewRowAnimationNone];
             
             if (plus) {
                 _price += itemModel.univalence;
@@ -309,6 +363,7 @@ static float kLeftTableViewWidth = 100.f;
                     shopModal.min_price = itemModel.univalence;
                     shopModal.count = number;
                     [_shopCarArr addObject:shopModal];
+                    _countLabel.text = [NSString stringWithFormat:@"%lu",(unsigned long)[_shopCarArr count]];
                 }
                 else {
                     for (NSInteger i=0; i<_shopCarArr.count; i++) {
@@ -316,6 +371,7 @@ static float kLeftTableViewWidth = 100.f;
                         if (shopModal.orderid == itemModel.item_id) {
                             shopModal.count = number;
                             [_shopCarArr replaceObjectAtIndex:i withObject:shopModal];
+                            _countLabel.text = [NSString stringWithFormat:@"%lu",(unsigned long)[_shopCarArr count]];
                         }
                     }
                 }
@@ -328,7 +384,7 @@ static float kLeftTableViewWidth = 100.f;
                         ShopCarModel *shopModal = _shopCarArr[i];
                         if (shopModal.orderid == itemModel.item_id) {
                             [_shopCarArr removeObjectAtIndex:i];
-
+                            _countLabel.text = [NSString stringWithFormat:@"%lu",(unsigned long)[_shopCarArr count]];
                         }
                     }
                 }
@@ -338,7 +394,7 @@ static float kLeftTableViewWidth = 100.f;
                         if (shopModal.orderid == itemModel.item_id) {
                             shopModal.count = number;
                             [_shopCarArr replaceObjectAtIndex:i withObject:shopModal];
-
+                            _countLabel.text = [NSString stringWithFormat:@"%lu",(unsigned long)[_shopCarArr count]];
                         }
                     }
                 }

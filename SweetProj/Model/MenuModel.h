@@ -24,6 +24,7 @@
 @property (nonatomic) float discount_singe;
 @property (nonatomic) float discount;
 @property (nonatomic) float discount_result;
+@property (nonatomic) NSData<Optional> *photoData;
 
 @property (nonatomic) NSNumber<Optional> *count;
 
