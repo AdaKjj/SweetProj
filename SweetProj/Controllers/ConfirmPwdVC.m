@@ -147,7 +147,6 @@
     }
     else {
         if ([_pwdTF.text isEqualToString:_pwdSubmitTF.text]) {
-            errorMessage = [NSString stringWithFormat:@"两次密码输入不一致"];
             if ([_pwdTF isValid:&errorMessage]) {
                 if ([_fromVCStr isEqualToString:@"注册"]) {
                     LoginRegisterManager *manager = [[LoginRegisterManager alloc] init];
@@ -165,16 +164,19 @@
             errorMessage = [NSString stringWithFormat:@"两次密码输入不一致"];
         }
     }
+    
+    if (errorMessage) {
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil
                                                     message:errorMessage
                                                    delegate:self
                                           cancelButtonTitle:@"确定"
                                           otherButtonTitles:nil, nil];
     [alert show];
+    }
 }
 
 - (void)receiveCompeleteRequest:(int)requestResult {
-    if (requestResult == 0) {
+    if (requestResult == 1) {
         [self.navigationController popToViewController:[self.navigationController.viewControllers objectAtIndex:([self.navigationController.viewControllers count] -4)] animated:YES];
     }
     else {

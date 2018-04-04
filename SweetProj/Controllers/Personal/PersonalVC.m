@@ -10,8 +10,10 @@
 #import "UIImage+Addition.h"
 #import "PersonalCollectionViewCell.h"
 #import "PersonalSettingsVC.h"
-#import "MyCardViewController.h"
 #import "XWScanImage.h"
+
+#import "MyCommentVC.h"
+#import "MyCardViewController.h"
 
 @interface PersonalVC ()<UICollectionViewDataSource,UICollectionViewDelegate,UICollectionViewDelegateFlowLayout> {
     NSArray *_moduleNameArr;
@@ -32,6 +34,11 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+//    if ([userDefaults objectForKey:@"username"]) {
+//        [JXTAlertController ]
+//    }
+    
     _headerImageView = [[UIImageView alloc] init];
     _headerImageView.clipsToBounds = YES;
     _headerImageView.contentMode = UIViewContentModeScaleAspectFill;
@@ -44,11 +51,11 @@
     }];
     
     _avatorImageView = [[UIImageView alloc]init];
-    _avatorImageView.backgroundColor = [UIColor grayColor];
+    _avatorImageView.backgroundColor = [UIColor lightGrayColor];
     _avatorImageView.layer.masksToBounds = YES;
     _avatorImageView.userInteractionEnabled = YES;
     _avatorImageView.layer.cornerRadius = 50.0;
-    _avatorImageView.image = [UIImage imageNamed:@"text1"];
+    //_avatorImageView.image = [UIImage imageNamed:@"text1"];
     [self.headerImageView addSubview:_avatorImageView];
     [_avatorImageView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerX.centerY.equalTo(0);
@@ -71,10 +78,23 @@
     [self setModuleName];
 
     [self configCollectionView];
+    
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:@"您确定要退出么" preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil];
+//    UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^{
+//
+//    }];
+    UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [USERDEFAULTS removeObjectForKey:@"username"];
+        [USERDEFAULTS removeObjectForKey:@"password"];
+    }];
+    [alertController addAction:cancelAction];
+    [alertController addAction:okAction];
+    [self presentViewController:alertController animated:YES completion:nil];
 }
 
 - (void)setModuleName {
-    _moduleNameArr = [[NSArray alloc] initWithObjects:@"我的评价", @"会员卡", @"我的收藏", @"我的赞", nil];
+    _moduleNameArr = [[NSArray alloc] initWithObjects:@"历史订单", @"会员卡", @"我的收藏", @"我的评价", nil];
 
     UIImage *image1 = [UIImage imageNamed:@"myComment"];
     UIImage *image2 = [UIImage imageNamed:@"myCards"];
@@ -147,7 +167,7 @@
     
     PersonalCollectionViewCell *cell = (PersonalCollectionViewCell *)[collectionView dequeueReusableCellWithReuseIdentifier:@"cellId" forIndexPath:indexPath];
     cell.iconImage.image = [_moduleImageArr objectAtIndex:indexPath.row];
-    cell.countLabel.text = [NSString stringWithFormat:@"index--%ld",(long)indexPath.row];
+    cell.countLabel.text = @"4";
     cell.moduleLabel.text = [_moduleNameArr objectAtIndex:indexPath.row];
     return cell;
 }
@@ -165,6 +185,11 @@
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.row == 0) {
+        MyCommentVC *vc = [[MyCommentVC alloc] init];
+        vc.hidesBottomBarWhenPushed = YES;
+        [self.navigationController pushViewController:vc animated:YES];
+    }
     if (indexPath.row == 1) {
         MyCardViewController *cardlVC = [[MyCardViewController alloc] init];
         cardlVC.hidesBottomBarWhenPushed = YES;

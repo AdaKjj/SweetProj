@@ -9,6 +9,8 @@
 #ifndef std_h
 #define std_h
 
+#define USERDEFAULTS [NSUserDefaults standardUserDefaults]
+
 #define     FONT_ARIAL          @"ArialMT"
 #define     FONT_ARIAL_BOLD     @"Arial-BoldMT"
 #define     C_FONT_ARIAL        "ArialMT"
@@ -76,5 +78,6 @@
 #import "NSObject+Property.h"
 #import "UIImageView+WebCache.h"
 #import <AliyunOSSiOS/OSSService.h>
+#import "JXTAlertManagerHeader.h"
 
 #endif /* std_h */

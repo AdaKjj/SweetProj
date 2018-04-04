@@ -23,5 +23,5 @@
 @property (nonatomic) OneRecreationModel *oneRecreationModel;
 
 - (void)getAdArr:(NSDictionary *)jsonDic;
-
+- (void)getWeathertmp:(NSString *)tmp condTxt:(NSString *)condTxt condCode:(NSString *)condCode lat:(NSString *)lat lon:(NSString *)lon city:(NSString *)city;
 @end

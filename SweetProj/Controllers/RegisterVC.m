@@ -196,17 +196,11 @@
 - (void)receiveSendEmailRequest:(int)requestResult {
     NSString *messageStr = nil;
     switch (requestResult) {
-        case 0:
+        case 1:
             messageStr = @"请前往邮箱查看验证码";
             break;
-        case 1:
+        case 0:
             messageStr = @"验证码请求失败";
-            break;
-        case 2:
-            messageStr = @"验证码发送频率过快，请稍后再试";
-            break;
-        case 3:
-            messageStr = @"该邮箱已被注册";
             break;
         default:
             break;
@@ -222,7 +216,7 @@
 - (void)receiveSendEmailVerRequest:(int)requestResult {
     NSString *messageStr = nil;
     switch (requestResult) {
-        case 0: {
+        case 1: {
             ConfirmPwdVC *confirmVC = [ConfirmPwdVC new];
             confirmVC.emailStr = self.emailTF.text;
             confirmVC.fromVCStr = _fromVCStr;
@@ -230,14 +224,8 @@
             return;
             break;
         }
-        case 1:
-            messageStr = @"验证码错误";
-            break;
-        case 3:
-            messageStr = @"验证码过期，已发送新验证码至邮箱";
-            break;
-        case 5:
-            messageStr = @"请输入正确的邮箱";
+        case 0:
+            messageStr = @"验证码发送失败";
             break;
         default:
             break;

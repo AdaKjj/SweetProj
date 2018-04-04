@@ -256,7 +256,6 @@
 }
 
 - (void)labelClick {
-    //拨打电话
     NSMutableString *str=[[NSMutableString alloc] initWithFormat:@"tel:%@",_telDetail.text];
     UIWebView *callWebview = [[UIWebView alloc] init];
     [callWebview loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:str]]];

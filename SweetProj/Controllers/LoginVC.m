@@ -235,12 +235,9 @@
             return;
         }
     }
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil
-                                                    message:errorMessage
-                                                   delegate:self
-                                          cancelButtonTitle:@"确定"
-                                          otherButtonTitles:nil, nil];
-    [alert show];
+    [self jxt_showAlertWithTitle:nil message:errorMessage appearanceProcess:^(JXTAlertController * _Nonnull alertMaker) {
+        alertMaker.addActionCancelTitle(@"确定");
+    } actionsBlock:nil];
     
 }
 
@@ -260,12 +257,12 @@
     [self.navigationController popViewControllerAnimated:YES];
 }
 
-- (void)receiveLoginRequest:(int)requestResult {
-    if (requestResult != 1) {
-        NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-        [userDefaults setObject:_emailTF.text forKey:@"username"];
-        [userDefaults setObject:_pwdTF.text forKey:@"password"];
-        [userDefaults synchronize];
+- (void)receiveLoginRequest:(NSString *)requestResult {
+    if (requestResult.length == 32) {
+        [USERDEFAULTS setObject:_emailTF.text forKey:@"username"];
+        [USERDEFAULTS setObject:_pwdTF.text forKey:@"password"];
+        [USERDEFAULTS setObject:requestResult forKey:@"Session"];
+        [USERDEFAULTS synchronize];
         
         [self.navigationController popViewControllerAnimated:NO];
     }

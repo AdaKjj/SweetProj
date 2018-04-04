@@ -23,25 +23,29 @@
     NSString *urlString = nil;
     NSString *sendString = nil;
     switch (type) {
+            // 登录
         case LOGINUSERLOGIN:
             receivedType = LOGINUSERLOGIN;
-            urlString = @"http://thethreestooges.cn/consumer/bean/login/login.php";
+            urlString = @"https://thethreestooges.cn:666/identity/login/login.php";
             sendString = [NSString stringWithFormat:@"username=%@&password=%@",email,pwd];
             break;
+            // 请求验证码
         case LOGINCHECKOUTEMAIL:
             receivedType = LOGINCHECKOUTEMAIL;
-            urlString = @"http://thethreestooges.cn/consumer/bean/login/mail_submit.php";
+            urlString = @"https://thethreestooges.cn:666/application/login/mail_submit.php";
             sendString = [NSString stringWithFormat:@"mail_address=%@",email];
             break;
+            // 提交验证码和邮箱地址
         case LOGINEMAILVER:
             receivedType = LOGINEMAILVER;
-            urlString = @"http://thethreestooges.cn/consumer/bean/login/mail_validate.php";
+            urlString = @"https://thethreestooges.cn:666/application/login/mail_validate.php";
             sendString = [NSString stringWithFormat:@"mail_address=%@&mail_ver=%@",email,verCode];
             break;
+            // 提交邮件和密码
         case LOGINUSERREGISTER:
             receivedType = LOGINUSERREGISTER;
-            urlString = @"http://thethreestooges.cn/consumer/bean/login/user_write.php";
-            sendString = [NSString stringWithFormat:@"mail_address=%@&password=%@",email,pwd];
+            urlString = @"https://thethreestooges.cn:666/application/login/user_write.php";
+            sendString = [NSString stringWithFormat:@"username=%@&password=%@",email,pwd];
             break;
     }
     
@@ -64,7 +68,6 @@
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response
 {
     NSHTTPURLResponse *res = (NSHTTPURLResponse *)response;
-    NSLog(@"%@",[res allHeaderFields]);
     buff = [NSMutableData data];
 }
 //接收到服务器传输数据的时候调用，此方法根据数据大小执行若干次
@@ -79,7 +82,7 @@
     NSLog(@"%@",receiveStr);
     switch(receivedType) {
         case LOGINUSERLOGIN:
-            [_loginVC receiveLoginRequest:[receiveStr intValue]];
+            [_loginVC receiveLoginRequest:receiveStr];
             break;
         case LOGINCHECKOUTEMAIL:
             [_registerVC receiveSendEmailRequest:[receiveStr intValue]];

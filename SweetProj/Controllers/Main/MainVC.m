@@ -22,13 +22,18 @@
 #import <CoreLocation/CoreLocation.h>
 
 #import "MainManager.h"
+#import "WeatherManager.h"
 #import "UIImageView+WebCache.h"
 #import "UIImage+Resize.h"
 #import "UIButton+EdgeInsets.h"
 
 #define KCURRENTCITYINFODEFAULTS [NSUserDefaults standardUserDefaults]
+#define IS_IOS_VERSION_11 (([[[UIDevice currentDevice]systemVersion]floatValue] >= 11.0)? (YES):(NO))
+
 #define FONT_TOPIC systemFont(17)
 #define FONT_OTHER systemFont(13)
+
+#define TOOLBARHEIGHT 55
 
 @interface MainVC ()<UISearchBarDelegate, UICollectionViewDataSource,UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, JFCityViewControllerDelegate, CLLocationManagerDelegate, UITextFieldDelegate>
 
@@ -36,6 +41,9 @@
 /** 导航栏*/
 @property (nonatomic) UIButton *leftButton;
 @property (nonatomic) UITextField *searchTF;
+@property (nonatomic) UIButton *weatherBtn;
+
+@property (nonatomic) UIScrollView *scrollView;
 
 /** 城市定位管理器*/
 @property (nonatomic, strong) JFLocation *locationManager;
@@ -51,8 +59,8 @@
 @property (assign,  nonatomic) bool isPop;
 
 @property (nonatomic) CLLocationManager *clLocationManager;
-@property (nonatomic) CLLocationDegrees latitude;
-@property (nonatomic) CLLocationDegrees longitude;
+
+@property (nonatomic) UIControl *baseControl;
 
 @end
 
@@ -65,16 +73,26 @@
     self.automaticallyAdjustsScrollViewInsets = NO;
     self.edgesForExtendedLayout = UIRectEdgeNone;
     
+    _baseControl = [[UIControl alloc] initWithFrame:self.view.bounds];
+    _baseControl.backgroundColor = [UIColor clearColor];
+    [_baseControl addTarget:self action:@selector(onTouchDismiss:) forControlEvents:UIControlEventTouchUpInside];
+    
     [self startLocation];
     [self setupSearchBar];
     
     [self configCollectionView];
+    
 }
 
 -(void)viewWillAppear:(BOOL)animated{
     [self setupLoginBtn];
     [self.navigationController setNavigationBarHidden:NO];
     [self.tabBarController setHidesBottomBarWhenPushed:NO];
+    self.navigationController.navigationBar.backgroundColor = [UIColor clearColor];
+    
+    self.navigationController.navigationBar.barTintColor = [UIColor clearColor];
+    [self.navigationController.navigationBar setBackgroundImage:
+     [UIImage imageNamed:@"navBG.png"] forBarMetrics:UIBarMetricsDefault];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -104,24 +122,73 @@
 
 - (void)configCollectionView
 {
-    UIScrollView * scrollView = [[UIScrollView alloc] init];
-    [self.view addSubview:scrollView];
-    scrollView.backgroundColor = RGB(243, 243, 243);
-    [scrollView mas_makeConstraints:^(MASConstraintMaker *make) {
+    _scrollView = [[UIScrollView alloc] init];
+    [self.view addSubview:_scrollView];
+    _scrollView.backgroundColor = RGB(243, 243, 243);
+    [_scrollView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(0);
         make.left.right.equalTo(0);
         make.bottom.equalTo(0);
     }];
-    scrollView.contentSize = CGSizeMake(SCREEN_WIDTH, 0);
+    _scrollView.contentSize = CGSizeMake(SCREEN_WIDTH, 0);
+    
+    UIImageView *toolbar = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 50)];
+    toolbar.backgroundColor = [UIColor whiteColor];
+    [_scrollView addSubview:toolbar];
+    toolbar.userInteractionEnabled = YES;
+
+    //左侧城市
+    UIImage *leftImage = [UIImage imageNamed:@"定位"];
+    _leftButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [_leftButton setImage:leftImage forState:UIControlStateNormal];
+    [_leftButton setTitle:@"定位中" forState:UIControlStateNormal];
+    [_leftButton setTitleColor:CELL_TEXT_COLOR forState:UIControlStateNormal];
+    [_leftButton.titleLabel setFont:BoldSystemFont(18)];
+    _leftButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
+    [_leftButton layoutButtonWithEdgeInsetsStyle:ButtonEdgeInsetsStyleImageLeft imageTitlespace:3];
+    [_leftButton addTarget:self action:@selector(locBtnClicked) forControlEvents:UIControlEventTouchUpInside];
+    [toolbar addSubview:_leftButton];
+    [_leftButton mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(15);
+        make.top.equalTo(16);
+        make.width.equalTo(100);
+        make.height.equalTo(20);
+    }];
+    
+    UIButton *qrBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    [qrBtn addTarget:self action:@selector(qrBtnClicked) forControlEvents:UIControlEventTouchUpInside];
+        UIImage *image2 = [[UIImage imageNamed:@"qrcodescan"] resizedImage:CGSizeMake(30, 30) interpolationQuality:kCGInterpolationHigh];
+    [qrBtn setImage:image2 forState:UIControlStateNormal];
+    [qrBtn setTitle:@"扫一扫点餐" forState:UIControlStateNormal];
+    [qrBtn setTitleColor:CELL_TEXT_COLOR forState:UIControlStateNormal];
+    [qrBtn.titleLabel setFont:systemFont(11)];
+    qrBtn.frame = CGRectMake(SCREEN_WIDTH - 80, -3, 90, 60);
+    CGSize size2 = [qrBtn.titleLabel.text sizeWithFont:systemFont(11) constrainedToSize:CGSizeMake(MAXFLOAT, qrBtn.titleLabel.frame.size.height)];
+    qrBtn.titleEdgeInsets =UIEdgeInsetsMake(0.5*image2.size.height, -0.5*image2.size.width, -0.5*image2.size.height, 0.5*image2.size.width);
+    qrBtn.imageEdgeInsets =UIEdgeInsetsMake(-0.5*size2.height, 0.5*size2.width, 0.5*size2.height, -0.5*size2.width);
+    [toolbar addSubview:qrBtn];
+    
+    _weatherBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    UIImage *image = [[UIImage imageNamed:@"w101"] resizedImage:CGSizeMake(30, 30) interpolationQuality:kCGInterpolationHigh];
+    //UIImage *image = [UIImage imageNamed:@"w101"];
+    [_weatherBtn setImage:[UIImage imageNamed:@"w101"] forState:UIControlStateNormal];
+    [_weatherBtn setTitle:@"等待定位" forState:UIControlStateNormal];
+    [_weatherBtn.titleLabel setFont:systemFont(11)];
+    [_weatherBtn setTitleColor:CELL_TEXT_COLOR forState:UIControlStateNormal];
+    _weatherBtn.frame = CGRectMake(SCREEN_WIDTH - 140, -5, 90, 60);
+    CGSize size1 = [_weatherBtn.titleLabel.text sizeWithFont:systemFont(11) constrainedToSize:CGSizeMake(MAXFLOAT, _weatherBtn.titleLabel.frame.size.height)];
+    self.weatherBtn.titleEdgeInsets =UIEdgeInsetsMake(0.5*image.size.height, -0.5*image.size.width, -0.5*image.size.height, 0.5*image.size.width);
+    self.weatherBtn.imageEdgeInsets =UIEdgeInsetsMake(-0.5*size1.height, 0.5*size1.width, 0.5*size1.height, -0.5*size1.width);
+    [toolbar addSubview:_weatherBtn];
     
     //————————————————————————————专题
     //1.初始化ToopicAdlayout
     AdCellLayout *layout = [[AdCellLayout alloc] init];
     //2.初始化collectionView
     layout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
-    _topicCollectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 200) collectionViewLayout:layout];
+    _topicCollectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, TOOLBARHEIGHT, SCREEN_WIDTH, 200) collectionViewLayout:layout];
     _topicCollectionView.tag = 0;
-    [scrollView addSubview:_topicCollectionView];
+    [_scrollView addSubview:_topicCollectionView];
     
     //隐藏水平滚动条
     _topicCollectionView.showsHorizontalScrollIndicator = NO;
@@ -137,9 +204,9 @@
     UIImage *whiteImage = [UIImage imageWithColor:[UIColor whiteColor] size:CGSizeMake(SCREEN_WIDTH, 30)];
     UIImageView *foodToolBar = [[UIImageView alloc]initWithImage:whiteImage];
     foodToolBar.userInteractionEnabled = YES;
-    [scrollView addSubview:foodToolBar];
+    [_scrollView addSubview:foodToolBar];
     [foodToolBar mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(215);
+        make.top.equalTo(215+TOOLBARHEIGHT);
         make.left.equalTo(0);
         make.height.equalTo(25);
         make.width.equalTo(SCREEN_WIDTH);
@@ -174,9 +241,9 @@
     //————————————————————————————美食
     UICollectionViewFlowLayout *foodLayout = [[UICollectionViewFlowLayout alloc] init];
     foodLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
-    _foodCollectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 240, SCREEN_WIDTH, 160) collectionViewLayout:foodLayout];
+    _foodCollectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 240+TOOLBARHEIGHT, SCREEN_WIDTH, 160) collectionViewLayout:foodLayout];
     _foodCollectionView.tag = 2;
-    [scrollView addSubview:_foodCollectionView];
+    [_scrollView addSubview:_foodCollectionView];
     
     _foodCollectionView.showsVerticalScrollIndicator = NO;
     _foodCollectionView.backgroundColor = [UIColor whiteColor];
@@ -187,9 +254,9 @@
     //————————————————————————————————————休闲娱乐导航栏
     UIImageView *relaxToolBar = [[UIImageView alloc]initWithImage:whiteImage];
     relaxToolBar.userInteractionEnabled = YES;
-    [scrollView addSubview:relaxToolBar];
+    [_scrollView addSubview:relaxToolBar];
     [relaxToolBar mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(415);
+        make.top.equalTo(415+TOOLBARHEIGHT);
         make.left.equalTo(0);
         make.height.equalTo(25);
         make.width.equalTo(SCREEN_WIDTH);
@@ -223,9 +290,9 @@
     //————————————————————————————休闲娱乐
     UICollectionViewFlowLayout *relaxLayout = [[UICollectionViewFlowLayout alloc] init];
     relaxLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
-    _relaxCollectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 440, SCREEN_WIDTH, 160) collectionViewLayout:relaxLayout];
+    _relaxCollectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 440+TOOLBARHEIGHT, SCREEN_WIDTH, 160) collectionViewLayout:relaxLayout];
     _relaxCollectionView.tag = 3;
-    [scrollView addSubview:_relaxCollectionView];
+    [_scrollView addSubview:_relaxCollectionView];
     
     _relaxCollectionView.showsVerticalScrollIndicator = NO;
     _relaxCollectionView.backgroundColor = [UIColor whiteColor];
@@ -233,7 +300,7 @@
     _relaxCollectionView.delegate = self;
     _relaxCollectionView.dataSource = self;
     
-    scrollView.contentSize = CGSizeMake(SCREEN_WIDTH, _relaxCollectionView.frame.origin.y + _relaxCollectionView.frame.size.height);
+    _scrollView.contentSize = CGSizeMake(SCREEN_WIDTH, _relaxCollectionView.frame.origin.y + _relaxCollectionView.frame.size.height);
 }
 
 - (void)getAdArr:(NSDictionary *)jsonDic {    
@@ -245,6 +312,20 @@
     [_topicCollectionView reloadData];
 }
 
+- (void)getWeathertmp:(NSString *)tmp condTxt:(NSString *)condTxt condCode:(NSString *)condCode lat:(NSString *)lat lon:(NSString *)lon city:(NSString *)city {
+    UIImage *image = [UIImage imageNamed:[NSString stringWithFormat:@"w%@",condCode]];
+    [ _weatherBtn setImage:image forState:UIControlStateNormal];
+    [_weatherBtn setTitle:[NSString stringWithFormat:@"%@ %@",condTxt,tmp] forState:UIControlStateNormal];
+    
+    CGSize size1 = [_weatherBtn.titleLabel.text sizeWithFont:systemFont(11) constrainedToSize:CGSizeMake(MAXFLOAT, _weatherBtn.titleLabel.frame.size.height)];
+    self.weatherBtn.titleEdgeInsets = UIEdgeInsetsMake(0.5*image.size.height, -0.5*image.size.width, -0.5*image.size.height, 0.5*image.size.width);
+    self.weatherBtn.imageEdgeInsets = UIEdgeInsetsMake(-0.5*size1.height, 0.5*size1.width, 0.5*size1.height, -0.5*size1.width);
+    
+    if (![_leftButton.titleLabel.text isEqualToString:city] && ![_leftButton.titleLabel.text isEqualToString:[NSString stringWithFormat:@"%@市",city]]) {
+        [self sendRequestWithLon:lon andLat:lat];
+    }
+}
+
 - (void)loginBtnClick
 {
     LoginVC *loginVC = [[LoginVC alloc] init];
@@ -253,19 +334,7 @@
 }
 
 - (void)setupSearchBar {
-    //导航栏左侧图标
-    UIImage *leftImage = [UIImage imageNamed:@"定位"];
-    _leftButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [_leftButton setImage:leftImage forState:UIControlStateNormal];
-    [_leftButton setTitle:@"定位中" forState:UIControlStateNormal];
-    [_leftButton setTitle:@"定位中" forState:UIControlStateSelected];
-    [_leftButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    [_leftButton.titleLabel setFont:systemFont(12)];
-    _leftButton.frame = CGRectMake(0, 0, 50, 44);
-    _leftButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
-    [_leftButton layoutButtonWithEdgeInsetsStyle:ButtonEdgeInsetsStyleImageLeft imageTitlespace:1];
-    [_leftButton addTarget:self action:@selector(locBtnClicked) forControlEvents:UIControlEventTouchUpInside];
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:_leftButton];
+    
     
     //搜索框
     UIView *leftView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, 35, 35)];
@@ -275,7 +344,7 @@
     searchImageView.contentMode = UIViewContentModeCenter;
     [leftView addSubview:searchImageView];
     
-    _searchTF = [[UITextField alloc] initWithFrame:CGRectMake(0,0,SCREEN_WIDTH - 140,35)];
+    _searchTF = [[UITextField alloc] initWithFrame:CGRectMake(0,0,SCREEN_WIDTH - 88,35)];
     _searchTF.borderStyle = UITextBorderStyleNone;
     _searchTF.textColor = [UIColor blackColor];
     _searchTF.backgroundColor = [UIColor whiteColor];
@@ -291,6 +360,10 @@
     _searchTF.leftViewMode = UITextFieldViewModeAlways;
     self.navigationItem.titleView = _searchTF;
     _searchTF.delegate = self;
+}
+
+- (void)qrBtnClicked {
+    
 }
 
 - (void)moreFoodBtnClicked {
@@ -317,7 +390,6 @@
     [self presentViewController:navigationController animated:YES completion:nil];
 }
 
-
 -(void)startLocation{
     if ([CLLocationManager locationServicesEnabled]) {//判断定位操作是否被允许
         self.clLocationManager = [[CLLocationManager alloc] init];
@@ -332,7 +404,20 @@
         //不能定位用户的位置的情况再次进行判断，并给与用户提示
         //1.提醒用户检查当前的网络状况
         //2.提醒用户打开定位开关
+        
     }
+}
+
+- (void)sendRequestWithLon:(NSString *)lon andLat:(NSString *)lat {
+    MainManager *mana = [[MainManager alloc] init];
+    mana.mainVC = self;
+    [mana sendRequestWithLong:lon lat:lat];
+}
+
+- (void)sendRequestWithCity:(NSString *)city {
+    WeatherManager *mana = [[WeatherManager alloc] init];
+    mana.mainVC = self;
+    [mana sendRequestWithCity:city];
 }
 
 
@@ -340,15 +425,6 @@
 - (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations {
     //当前所在城市的坐标值
     CLLocation *currLocation = [locations lastObject];
-    NSLog(@"经度=%f 纬度=%f 高度=%f", currLocation.coordinate.latitude, currLocation.coordinate.longitude, currLocation.altitude);
-    NSString *lat = [NSString stringWithFormat:@"%f",currLocation.coordinate.latitude];
-    NSString *lon =[NSString stringWithFormat:@"%f",currLocation.coordinate.longitude];
-    _latitude = currLocation.coordinate.latitude;
-    _longitude = currLocation.coordinate.longitude;
-    
-    MainManager *mana = [[MainManager alloc] init];
-    mana.mainVC = self;
-    [mana sendRequestWithLong:lon lat:lat];
     
     //根据经纬度反向地理编译出地址信息
     CLGeocoder * geoCoder = [[CLGeocoder alloc] init];
@@ -356,12 +432,15 @@
         for (CLPlacemark * placemark in placemarks) {
             NSDictionary *address = [placemark addressDictionary];
             //  Country(国家)  State(省)  City（市）
-            NSLog(@"#####%@",address);
-            NSLog(@"%@", [address objectForKey:@"Country"]);
-            NSLog(@"%@", [address objectForKey:@"State"]);
-            NSLog(@"%@", [address objectForKey:@"City"]);
+            
             [_leftButton setTitle:[address objectForKey:@"City"] forState:UIControlStateNormal];
             [_leftButton setTitle:[address objectForKey:@"City"] forState:UIControlStateSelected];
+            
+            NSString *lat = [NSString stringWithFormat:@"%f",currLocation.coordinate.latitude];
+            NSString *lon =[NSString stringWithFormat:@"%f",currLocation.coordinate.longitude];
+
+            [self sendRequestWithLon:lon andLat:lat];
+            [self sendRequestWithCity:[address objectForKey:@"City"]];
         }
     }];
 }
@@ -527,6 +606,16 @@
 }
 
 #pragma mark - textFieldDelegate
+- (void)onTouchDismiss:(id)sender
+{
+    [_searchTF endEditing:YES];
+    [_baseControl removeFromSuperview];
+}
+
+- (void)textFieldDidBeginEditing:(UITextField *)textField {
+    [self.view insertSubview:_baseControl aboveSubview:_topicCollectionView];
+}
+
 //完成
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     NSString *str = textField.text;

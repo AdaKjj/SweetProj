@@ -28,29 +28,29 @@
         [self.contentView addSubview:_iconImage];
         [self.iconImage mas_makeConstraints:^(MASConstraintMaker *make) {
             make.centerY.equalTo(0);
-            make.left.equalTo(35);
+            make.left.equalTo(40);
             make.height.width.equalTo(30);
         }];
         
         _countLabel = [[UILabel alloc] init];
-        _countLabel.font = BoldSystemFont(14);
-        //_countLabel.textColor = RGB(15, 15, 15);
+        _countLabel.font = systemFont(14);
+        _countLabel.textAlignment = NSTextAlignmentCenter;
         [self.contentView addSubview:_countLabel];
         [_countLabel mas_makeConstraints:^(MASConstraintMaker *make) {
             make.left.equalTo(_iconImage.right).inset(8);
             make.top.equalTo(_iconImage.top);
-            make.width.equalTo(60);
+            make.width.equalTo(58);
             make.height.equalTo(16);
         }];
         
         _moduleLabel = [[UILabel alloc] init];
-        _moduleLabel.font = BoldSystemFont(14);
-        //_moduleLabel.textColor = RGB(15, 15, 15);
+        _moduleLabel.font = systemFont(14);
+        _moduleLabel.textAlignment = NSTextAlignmentCenter;
         [self.contentView addSubview:_moduleLabel];
         [_moduleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
             make.left.equalTo(_iconImage.right).inset(8);
             make.bottom.equalTo(_iconImage.bottom);
-            make.width.equalTo(100);
+            make.width.equalTo(58);
             make.height.equalTo(16);
         }];
     }

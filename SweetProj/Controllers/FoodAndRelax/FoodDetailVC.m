@@ -16,6 +16,7 @@
 #import "XWScanImage.h"
 #import "ShopDetailManager.h"
 #import "UIImageView+WebCache.h"
+#import "TableViewController.h"
 
 #define BIANJU  22
 #define FONT_SMALL systemFont(13)
@@ -62,6 +63,7 @@
     self.edgesForExtendedLayout = UIRectEdgeNone;
     
     self.title = @"店铺介绍";
+    self.view.backgroundColor = [UIColor whiteColor];
     _scrollView = [[UIScrollView alloc] init];
     _scrollView.userInteractionEnabled = YES;
     [self.view addSubview:_scrollView];
@@ -76,8 +78,6 @@
     ShopDetailManager *mana = [[ShopDetailManager alloc] init];
     mana.foodDetailVC = self;
     [mana sendRequestWithMerID:[NSString stringWithFormat:@"%d",_mer_id]];
-    
-    
     
 }
 
@@ -113,8 +113,9 @@
 }
 
 - (void)singleRes {
-    ReservationInfoVC *reVC = [[ReservationInfoVC alloc] init];
-    [self.navigationController pushViewController:reVC animated:YES];
+    TableViewController *vc = [[TableViewController alloc] init];
+    vc.merId = [NSString stringWithFormat:@"%d",_mer_id];
+    [self.navigationController pushViewController:vc animated:YES];
 }
 
 - (void)setupScrollView {
@@ -460,9 +461,22 @@
     self.recommend   = self.shopDetailModel.recommend;
     self.environment = self.shopDetailModel.environment;
     if (self.name) {
-    [self setupScrollView];
-    [self setupMapDetail];
-    [self configAppointmentToolBar];
+        [self setupScrollView];
+        [self setupMapDetail];
+        [self configAppointmentToolBar];
+    }
+    else {
+        UIImage *round = [UIImage ellipseImageOfSize:CGSizeMake(40, 40) color:RGBA(50, 50, 50, 0.5)];
+        UIButton *backBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+        [backBtn setImage:[UIImage imageNamed:@"btn_back"] forState:UIControlStateNormal];
+        [backBtn setBackgroundImage:round forState:UIControlStateNormal];
+        [backBtn addTarget:self action:@selector(onTouchBack) forControlEvents:UIControlEventTouchUpInside];
+        [self.view addSubview:backBtn];
+        [backBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.left.equalTo(15);
+            make.top.equalTo(15);
+            make.width.and.height.equalTo(40);
+        }];
     }
 }
 
@@ -590,7 +604,6 @@
     _mapView.zoomEnabled = YES;
     //比例尺是否显示，ƒF默认YES
     _mapView.showsScale = YES;
-    
     [_mapView setShowsUserLocation:YES];
     
     //定义pointAnnotation

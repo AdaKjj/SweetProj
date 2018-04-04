@@ -25,5 +25,7 @@
 @property (nonatomic, assign) NSInteger month_saled;
 @property (nonatomic, assign) float min_price;
 
+@property (nonatomic) NSInteger count;
+
 @end
 

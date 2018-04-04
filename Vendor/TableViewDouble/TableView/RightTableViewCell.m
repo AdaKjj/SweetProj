@@ -12,13 +12,7 @@
 
 @interface RightTableViewCell ()
 
-@property (nonatomic, strong) UIImageView *imageV;
-@property (nonatomic, strong) UILabel *nameLabel;
-@property (nonatomic, strong) UILabel *priceLabel;
-@property (nonatomic, strong) UILabel *commentLabel;
-@property (nonatomic) int count;
 
-@property (nonatomic) UILabel *countLabel;
 
 @end
 
@@ -70,15 +64,12 @@
             make.width.equalTo(20);
         }];
         
-        _count = 0;
+        _countt = 0;
         
         _countLabel = [[UILabel alloc] init];
-        self.countLabel.text = [NSString stringWithFormat:@"%d",_count];
+        self.countLabel.text = [NSString stringWithFormat:@"%d",_countt];
         self.countLabel.textAlignment = NSTextAlignmentCenter;
         self.countLabel.font = systemFont(14);
-        self.countLabel.backgroundColor = [UIColor lightGrayColor];
-        self.countLabel.layer.masksToBounds = YES;
-        self.countLabel.layer.cornerRadius = 10;
         [self.contentView addSubview:self.countLabel];
         [self.countLabel mas_makeConstraints:^(MASConstraintMaker *make) {
             make.top.equalTo(_addBtn.mas_top);
@@ -109,27 +100,32 @@
     return self;
 }
 
+- (void)setModel:(ItemModel *)model {
+    _model = model;
+    self.nameLabel.text = model.name;
+    
+}
+
+- (void)layoutSubviews {
+    [super layoutSubviews];
+    
+    _countt = (int)self.model.count;
+    _countLabel.text = [NSString stringWithFormat:@"%d",_countt];
+}
+
 - (void)clickPuls:(UIButton *)btn
 {
-    self.count += 1;
-    self.countLabel.text = [NSString stringWithFormat:@"%d",_count];
-    self.operationBlock(self.count,NO);
+    _countt++;
+    self.countLabel.text = [NSString stringWithFormat:@"%d",_countt];
+    self.operationBlock(self.countt,YES);
 }
 - (void)clickMin:(UIButton *)btn
 {
-    if (_count > 0) {
-        self.count -= 1;
-        self.countLabel.text = [NSString stringWithFormat:@"%d",_count];
-        self.operationBlock(self.count,NO);
-
+    if (_countt > 0) {
+        _countt--;
+        self.countLabel.text = [NSString stringWithFormat:@"%d",_countt];
+        self.operationBlock(self.countt,NO);
     }
-}
-
-- (void)setModel:(FoodModel *)model
-{
-    [self.imageV sd_setImageWithURL:[NSURL URLWithString:model.picture]];
-    self.nameLabel.text = model.name;
-    self.priceLabel.text = [NSString stringWithFormat:@"￥%@",@(model.min_price)];
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated

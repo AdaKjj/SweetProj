@@ -23,20 +23,23 @@
     NSString *urlString = nil;
     NSString *sendString = nil;
     switch (type) {
+            // 忘记密码请求验证码
         case GETBACKCHECKOUTEMAIL:
             receivedType = GETBACKCHECKOUTEMAIL;
-            urlString = @"http://thethreestooges.cn/consumer/bean/login/forget_submit.php";
+            urlString = @"https://thethreestooges.cn:666/application/login/forget_submit.php";
             sendString = [NSString stringWithFormat:@"mail_address=%@",email];
             break;
+            // 提交验证码和邮件地址
         case GETBACKEMAILVER:
             receivedType = GETBACKEMAILVER;
-            urlString = @"http://thethreestooges.cn/consumer/bean/login/forget_validate.php";
+            urlString = @"https://thethreestooges.cn:666/application/login/forget_validate.php";
             sendString = [NSString stringWithFormat:@"mail_address=%@&mail_ver=%@",email,verCode];
             break;
+            // 提交邮件和密码
         case GETBACKUSERREGISTER:
             receivedType = GETBACKUSERREGISTER;
-            urlString = @"http://thethreestooges.cn/consumer/bean/login/user_forget.php";
-            sendString = [NSString stringWithFormat:@"mail_address=%@&password=%@",email,pwd];
+            urlString = @"https://thethreestooges.cn:666/application/login/user_forget.php";
+            sendString = [NSString stringWithFormat:@"username=%@&password=%@",email,pwd];
             break;
     }
     NSLog(@"%@",urlString);
@@ -57,8 +60,6 @@
 //接收到服务器回应的时候调用此方法
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response
 {
-    NSHTTPURLResponse *res = (NSHTTPURLResponse *)response;
-    NSLog(@"%@",[res allHeaderFields]);
     buff = [NSMutableData data];
 }
 //接收到服务器传输数据的时候调用，此方法根据数据大小执行若干次

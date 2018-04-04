@@ -8,8 +8,8 @@
 
 #import "ReservationInfoVC.h"
 #import "UIImage+Addition.h"
-#import "TableViewController.h"
 #import "UITextFieldEx.h"
+#import "ConfirmReservationVC.h"
 
 @interface ReservationInfoVC ()<UITextFieldDelegate>
 
@@ -248,8 +248,8 @@
 
 
 - (void)orderBtnClicked {
-    TableViewController *table = [[TableViewController alloc] init];
-    [self.navigationController pushViewController:table animated:YES];
+    ConfirmReservationVC *vc = [[ConfirmReservationVC alloc] init];
+    [self.navigationController pushViewController:vc animated:YES];
 }
 
 #pragma mark - textFieldDelegate

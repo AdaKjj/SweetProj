@@ -13,9 +13,12 @@
 #import "TableViewController.h"
 #import "UIImage+Addition.h"
 #import "UITableViewCell+seperatorInset.h"
-#import "ConfirmReservationVC.h"
+#import "ReservationInfoVC.h"
+#import "MenuManager.h"
 
-static float kLeftTableViewWidth = 80.f;
+#import "ShopCarView.h"
+
+static float kLeftTableViewWidth = 100.f;
 
 @interface TableViewController () <UITableViewDelegate, UITableViewDataSource, CAAnimationDelegate>
 
@@ -26,6 +29,8 @@ static float kLeftTableViewWidth = 80.f;
 @property (nonatomic) UILabel *priceLabel;
 @property (nonatomic) UIButton *verbBtn;
 @property (nonatomic) float price;
+
+@property (nonatomic) NSMutableArray *shopCarArr;
 
 @end
 
@@ -45,27 +50,22 @@ static float kLeftTableViewWidth = 80.f;
     _selectIndex = 0;
     _isScrollDown = YES;
     
+    MenuManager *manager = [[MenuManager alloc] init];
+    manager.tbVC = self;
+    [manager sendRequestWithMerid:_merId];
+    
     self.edgesForExtendedLayout = UIRectEdgeNone;
     self.extendedLayoutIncludesOpaqueBars = NO;
     self.automaticallyAdjustsScrollViewInsets = NO;
     
-    NSString *path = [[NSBundle mainBundle] pathForResource:@"meituan" ofType:@"json"];
-    NSData *data = [NSData dataWithContentsOfFile:path];
-    NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:nil];
-    NSArray *foods = dict[@"data"][@"food_spu_tags"];
+    _shopCarArr = [NSMutableArray array];
     
-    for (NSDictionary *dict in foods)
-    {
-        CategoryModel *model = [CategoryModel objectWithDictionary:dict];
-        [self.categoryData addObject:model];
-        
-        NSMutableArray *datas = [NSMutableArray array];
-        for (FoodModel *f_model in model.spus)
-        {
-            [datas addObject:f_model];
-        }
-        [self.foodData addObject:datas];
-    }
+    UIButton *shopCarBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    shopCarBtn.frame = CGRectMake(0, 0, 40, 22);
+    [shopCarBtn setImage:[UIImage imageNamed:@"shopcar"] forState:UIControlStateNormal];
+    [shopCarBtn addTarget:self action:@selector(onTouchShopCar) forControlEvents:UIControlEventTouchUpInside];
+    
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:shopCarBtn];
     
     [self.view addSubview:self.leftTableView];
     [self.view addSubview:self.rightTableView];
@@ -76,7 +76,7 @@ static float kLeftTableViewWidth = 80.f;
     
     _price = 0.00;
     _priceLabel = [[UILabel alloc] init];
-    _priceLabel.text = [NSString stringWithFormat:@" 总计：¥%f",_price];
+    _priceLabel.text = [NSString stringWithFormat:@" 总计：¥%.2f",_price];
     _priceLabel.textColor = [UIColor whiteColor];
     [_priceLabel setFont:systemFont(18)];
     _priceLabel.backgroundColor = RGB(67, 67, 67);
@@ -103,20 +103,51 @@ static float kLeftTableViewWidth = 80.f;
     
 }
 
+- (void)onTouchShopCar {
+    ShopCarView *shopCarView = [[ShopCarView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
+    shopCarView.shopCarArr = _shopCarArr;
+    //shopCarView.
+    [[UIApplication sharedApplication].keyWindow addSubview:shopCarView];
+}
+
 - (void)verBtnClicked {
-    ConfirmReservationVC *vc = [[ConfirmReservationVC alloc] init];
-    [self.navigationController pushViewController:vc animated:YES];
+    NSLog(@"%@",_shopCarArr);
+    
+//    ReservationInfoVC *vc = [[ReservationInfoVC alloc] init];
+//    
+//    [self.navigationController pushViewController:vc animated:YES];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
+    [self.navigationController setNavigationBarHidden:NO];
+    //状态栏颜色
+    [self setStatusBarBackgroundColor:[UIColor whiteColor]];
+    
     [self.navigationController.navigationBar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
-    self.navigationController.navigationBar.backgroundColor = [UIColor clearColor];
+    self.navigationController.navigationBar.backgroundColor = [UIColor whiteColor];
     self.navigationController.navigationBar.tintColor = [UIColor blackColor];
     NSMutableDictionary *textAttrs = [NSMutableDictionary dictionary];
     textAttrs[NSForegroundColorAttributeName] = [UIColor clearColor];
     textAttrs[NSFontAttributeName] = [UIFont boldSystemFontOfSize:18];
     [self.navigationController.navigationBar setTitleTextAttributes:textAttrs];
     [self.navigationController.navigationBar setShadowImage:[UIImage imageWithColor:[UIColor whiteColor] size:CGSizeMake(self.view.frame.size.width, 0.5)]];
+}
+
+- (void)setStatusBarBackgroundColor:(UIColor *)color {
+    
+    UIView *statusBar = [[[UIApplication sharedApplication] valueForKey:@"statusBarWindow"] valueForKey:@"statusBar"];
+    if ([statusBar respondsToSelector:@selector(setBackgroundColor:)]) {
+        statusBar.backgroundColor = color;
+    }
+}
+
+//状态栏颜色
+//一定要在viewWillDisappear里面写，如果写在viewDidDisappear里面会出问题！！！！
+- (void)viewWillDisappear:(BOOL)animated{
+    [super viewWillDisappear:animated];
+    //为了不影响其他页面在viewDidDisappear做以下设置
+    self.navigationController.navigationBar.translucent = YES;//透明
+    [self setStatusBarBackgroundColor:[UIColor clearColor]];
 }
 
 /**
@@ -183,6 +214,34 @@ static float kLeftTableViewWidth = 80.f;
     return _rightTableView;
 }
 
+- (void)getMenuDic:(NSDictionary *)jsonDic {
+    self.menuModel = [[MenuModel alloc] initWithDictionary:jsonDic error:nil];
+    
+    for (ItemListModel *model in _menuModel.item_list) {
+        [self.categoryData addObject:model];
+    }
+    
+    for(int i=0; i<self.categoryData.count; i++) {
+        ItemListModel *listModel = self.categoryData[i];
+        NSMutableArray *listArr = [NSMutableArray array];
+        for (int i=0; i<listModel.item.count; i++) {
+            NSArray<ItemModel> *itemList = listModel.item;
+            ItemModel *itemModel = itemList[i];
+            itemModel.count = 0;
+            [listArr addObject:itemModel];
+        }
+        [self.foodData addObject:listArr];
+    }
+    
+    [_leftTableView reloadData];
+    [_rightTableView reloadData];
+    
+    NSIndexPath * selIndex = [NSIndexPath indexPathForRow:0 inSection:0];
+    [_leftTableView selectRowAtIndexPath:selIndex animated:YES scrollPosition:UITableViewScrollPositionTop];
+    NSIndexPath * path = [NSIndexPath indexPathForItem:0 inSection:0];
+    [self tableView:self.leftTableView didSelectRowAtIndexPath:path];
+}
+
 #pragma mark - TableView DataSource Delegate
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -193,7 +252,7 @@ static float kLeftTableViewWidth = 80.f;
     }
     else
     {
-        return self.categoryData.count;
+        return [self.categoryData count];
     }
 }
 
@@ -201,11 +260,12 @@ static float kLeftTableViewWidth = 80.f;
 {
     if (_leftTableView == tableView)
     {
-        return self.categoryData.count;
+        return [self.categoryData count];
     }
     else
     {
-        return [self.foodData[section] count];
+        NSMutableArray *arr = self.foodData[section];
+        return arr.count;
     }
 }
 
@@ -214,15 +274,76 @@ static float kLeftTableViewWidth = 80.f;
     if (_leftTableView == tableView)
     {
         LeftTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kCellIdentifier_Left forIndexPath:indexPath];
-        FoodModel *model = self.categoryData[indexPath.row];
-        cell.name.text = model.name;
+        ItemListModel *itemListModel = self.categoryData[indexPath.row];
+        cell.name.text = itemListModel.name;
+        
         return cell;
     }
     else
     {
         RightTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kCellIdentifier_Right forIndexPath:indexPath];
-        FoodModel *model = self.foodData[indexPath.section][indexPath.row];
-        cell.model = model;
+        
+        ItemModel *itemModel = self.foodData[indexPath.section][indexPath.row];
+        
+        cell.model = itemModel;
+        //[cell.imageV sd_setImageWithURL:[NSURL URLWithString:model.picture]];
+        cell.nameLabel.text = itemModel.name;
+        
+        cell.countt = (int)itemModel.count;
+        cell.priceLabel.text = [NSString stringWithFormat:@"￥%@",@(itemModel.univalence)];
+        cell.countLabel.text = [NSString stringWithFormat:@"%d",[itemModel.count intValue]];
+        
+        cell.operationBlock = ^(NSInteger number, BOOL plus) {
+            
+            self.itemListModel = self.menuModel.item_list[indexPath.section];
+            ItemModel *model2 = self.itemListModel.item[indexPath.row];
+            model2.count = [NSNumber numberWithInteger:number];
+            
+            if (plus) {
+                _price += itemModel.univalence;
+                _priceLabel.text = [NSString stringWithFormat:@" 总计：¥%.2f",_price];
+                if (number == 1) {
+                    ShopCarModel *shopModal = [ShopCarModel new];
+                    shopModal.orderid = itemModel.item_id;
+                    shopModal.name = itemModel.name;
+                    shopModal.min_price = itemModel.univalence;
+                    shopModal.count = number;
+                    [_shopCarArr addObject:shopModal];
+                }
+                else {
+                    for (NSInteger i=0; i<_shopCarArr.count; i++) {
+                        ShopCarModel *shopModal = _shopCarArr[i];
+                        if (shopModal.orderid == itemModel.item_id) {
+                            shopModal.count = number;
+                            [_shopCarArr replaceObjectAtIndex:i withObject:shopModal];
+                        }
+                    }
+                }
+            }
+            else {
+                _price -= itemModel.univalence;
+                _priceLabel.text = [NSString stringWithFormat:@" 总计：¥%.2f",_price];
+                if (number == 0) {
+                    for (NSInteger i=0; i<_shopCarArr.count; i++) {
+                        ShopCarModel *shopModal = _shopCarArr[i];
+                        if (shopModal.orderid == itemModel.item_id) {
+                            [_shopCarArr removeObjectAtIndex:i];
+
+                        }
+                    }
+                }
+                else {
+                    for (NSInteger i=0; i<_shopCarArr.count; i++) {
+                        ShopCarModel *shopModal = _shopCarArr[i];
+                        if (shopModal.orderid == itemModel.item_id) {
+                            shopModal.count = number;
+                            [_shopCarArr replaceObjectAtIndex:i withObject:shopModal];
+
+                        }
+                    }
+                }
+            }
+        };
         [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
         return cell;
     }
@@ -243,7 +364,7 @@ static float kLeftTableViewWidth = 80.f;
     if (_rightTableView == tableView)
     {
         TableViewHeaderView *view = [[TableViewHeaderView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 20)];
-        FoodModel *model = self.categoryData[section];
+        ItemListModel *model = self.categoryData[section];
         view.name.text = model.name;
         return view;
     }

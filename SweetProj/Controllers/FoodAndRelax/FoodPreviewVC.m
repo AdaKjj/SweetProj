@@ -12,7 +12,7 @@
 #import "DOPDropDownMenu.h"
 #import "PreViewDDListManager.h"
 
-@interface FoodPreviewVC ()<UITableViewDelegate,UITableViewDataSource,DOPDropDownMenuDataSource,DOPDropDownMenuDelegate> {
+@interface FoodPreviewVC ()<UITableViewDelegate, UITableViewDataSource, DOPDropDownMenuDataSource, DOPDropDownMenuDelegate> {
     NSArray *_ImageArr;
     NSArray *_nameArr;
 }
@@ -50,7 +50,6 @@
     [mana sendRequestWithCity:_cityString];
     
     // dropdownmenu
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]initWithTitle:@" " style:UIBarButtonItemStylePlain target:self action:@selector(menuReloadData)];
 //    self.classifys = @[@"美食",@"今日新单",@"电影",@"酒店"];
 //    self.cates = @[@"自助餐",@"快餐",@"火锅",@"日韩料理",@"西餐",@"烧烤小吃"];
 //    self.movices = @[@"内地剧",@"港台剧",@"英美剧"];
@@ -84,15 +83,11 @@
     [_menu reloadData];
 }
 
-- (void)menuReloadData
-{
-    self.classifys = @[@"美食",@"今日新单",@"电影"];
-    [_menu reloadData];
-}
 
 - (void)viewWillAppear:(BOOL)animated {
     [self.navigationController setNavigationBarHidden:NO];
     self.view.backgroundColor = [UIColor whiteColor];
+    self.navigationController.navigationBar.tintColor = [UIColor blackColor];
 }
 
 - (void)createTableView
@@ -240,7 +235,6 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *ID = @"cell";
     FoodPreviewCell *cell = [tableView dequeueReusableCellWithIdentifier:ID];
-    cell.selectionStyle = UITableViewCellSelectionStyleNone;
     if (!cell) {
         //单元格样式设置为UITableViewCellStyleDefault
         cell = [[FoodPreviewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ID];
@@ -253,6 +247,7 @@
         cell.introLabel.text = [_nameArr objectAtIndex:indexPath.row];
         
     }
+    [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
     return cell;
 }
 

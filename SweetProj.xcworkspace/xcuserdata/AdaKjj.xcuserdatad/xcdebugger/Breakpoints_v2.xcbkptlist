@@ -20,11 +20,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "SweetProj/Controllers/FoodAndRelax/FoodDetailVC.m"
-            timestampString = "542694254.941645"
+            timestampString = "544502396.006761"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "121"
-            endingLineNumber = "121"
+            startingLineNumber = "122"
+            endingLineNumber = "122"
             landmarkName = "-setupScrollView"
             landmarkType = "7">
          </BreakpointContent>
@@ -36,11 +36,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "SweetProj/Controllers/FoodAndRelax/FoodDetailVC.m"
-            timestampString = "542694254.942492"
+            timestampString = "544502396.007153"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "445"
-            endingLineNumber = "445"
+            startingLineNumber = "446"
+            endingLineNumber = "446"
             landmarkName = "-getShopDetail:"
             landmarkType = "7">
          </BreakpointContent>

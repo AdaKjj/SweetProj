@@ -10,7 +10,7 @@
 
 @interface LoginVC : UIViewController
 
-- (void)receiveLoginRequest:(int)requestResult;
+- (void)receiveLoginRequest:(NSString *)requestResult;
 
 @end
 

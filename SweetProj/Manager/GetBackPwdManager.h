@@ -20,6 +20,7 @@ typedef enum : NSUInteger {
 @property (nonatomic) RegisterVC *registerVC;
 @property (nonatomic) ConfirmPwdVC *confirmVC;
 
+
 - (void)sendRequest:(GetBackRequestType)type email:(NSString *)email pwd:(NSString *)pwd verdificationCode:(NSString *)verCode;
 
 @end

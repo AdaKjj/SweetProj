@@ -7,16 +7,27 @@
 //  代码下载地址https://github.com/leejayID/Linkage
 
 #import <UIKit/UIKit.h>
+#import "MenuModel.h"
 
-@class FoodModel;
+@class ItemModel;
 
 #define kCellIdentifier_Right @"RightTableViewCell"
+typedef void (^OperationBlock) (NSInteger number,BOOL plus);
 
 @interface RightTableViewCell : UITableViewCell
 
-@property (nonatomic, strong) FoodModel *model;
+@property (nonatomic, strong) ItemModel *model;
 @property (nonatomic) UIButton *minBtn;
 @property (nonatomic) UIButton *addBtn;
 
-@property (nonatomic,copy) void (^operationBlock)(NSInteger number,BOOL plus);
+@property (nonatomic, strong) UIImageView *imageV;
+@property (nonatomic, strong) UILabel *nameLabel;
+@property (nonatomic, strong) UILabel *priceLabel;
+@property (nonatomic, strong) UILabel *commentLabel;
+@property (nonatomic) int countt;
+
+@property (nonatomic) UILabel *countLabel;
+
+
+@property (nonatomic,copy) OperationBlock operationBlock;
 @end
