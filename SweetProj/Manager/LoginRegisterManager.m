@@ -49,9 +49,6 @@
             break;
     }
     
-    NSLog(@"%@",urlString);
-    NSLog(@"%@",sendString);
-    
     //第一步，创建url
     NSURL *url = [NSURL URLWithString:urlString];
     //第二步，创建请求

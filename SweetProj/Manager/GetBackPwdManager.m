@@ -42,8 +42,6 @@
             sendString = [NSString stringWithFormat:@"username=%@&password=%@",email,pwd];
             break;
     }
-    NSLog(@"%@",urlString);
-    NSLog(@"%@",sendString);
     
     //第一步，创建url
     NSURL *url = [NSURL URLWithString:urlString];

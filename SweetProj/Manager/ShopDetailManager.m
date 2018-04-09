@@ -33,8 +33,6 @@
 //接收到服务器回应的时候调用此方法
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response
 {
-    NSHTTPURLResponse *res = (NSHTTPURLResponse *)response;
-    NSLog(@"%@",[res allHeaderFields]);
     buff = [NSMutableData data];
 }
 //接收到服务器传输数据的时候调用，此方法根据数据大小执行若干次

@@ -75,9 +75,6 @@
 #define CELL_BACKGROUND_COLOR           [UIColor whiteColor]
 #define CELL_SEPARATOR_INSET            15
 
-#import "NSObject+Property.h"
-#import "UIImageView+WebCache.h"
-#import <AliyunOSSiOS/OSSService.h>
-#import "JXTAlertManagerHeader.h"
+
 
 #endif /* std_h */

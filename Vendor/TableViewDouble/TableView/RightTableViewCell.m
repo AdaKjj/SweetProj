@@ -8,7 +8,7 @@
 
 #import "RightTableViewCell.h"
 #import "CategoryModel.h"
-
+#import "UIControl+hitTest.h"
 #import "OSSManager.h"
 @interface RightTableViewCell ()
 
@@ -61,6 +61,7 @@
             make.height.equalTo(20);
             make.width.equalTo(20);
         }];
+        [_addBtn setHitTestEdgeInsets:UIEdgeInsetsMake(-10, -10, -10, -10)];
         
         _countt = 0;
         
@@ -93,7 +94,7 @@
             make.height.equalTo(20);
             make.width.equalTo(20);
         }];
-        
+        [_minBtn setHitTestEdgeInsets:UIEdgeInsetsMake(-10, -10, -10, -10)];
     }
     return self;
 }
@@ -104,8 +105,6 @@
     self.priceLabel.text = [NSString stringWithFormat:@"%.2f",model.univalence];
     self.imageV.image = [UIImage imageWithData:model.photoData];
     self.countLabel.text = [NSString stringWithFormat:@"%d",[model.count intValue]];
-    
-    NSLog(@"个数是啊啊啊%d",[model.count intValue]);
 }
 
 - (void)layoutSubviews {

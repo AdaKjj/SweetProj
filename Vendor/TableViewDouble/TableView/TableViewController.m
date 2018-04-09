@@ -121,8 +121,6 @@ static float kLeftTableViewWidth = 100.f;
         make.height.equalTo(50);
         make.width.equalTo(120);
     }];
-    
-    
 }
 
 - (void)onTouchShopCar {
@@ -396,8 +394,8 @@ static float kLeftTableViewWidth = 100.f;
                     for (NSInteger i=0; i<_shopCarArr.count; i++) {
                         ShopCarModel *shopModal = _shopCarArr[i];
                         if (shopModal.orderid == itemModel.item_id) {
-                            int count1 = [_countLabel.text intValue];
-                            _countLabel.text = [NSString stringWithFormat:@"%d",count1--];
+                            shopModal.count = number;
+                            [_shopCarArr removeObjectAtIndex:i];
                         }
                     }
                 }

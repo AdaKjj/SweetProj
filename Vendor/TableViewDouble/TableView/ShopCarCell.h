@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+@class ShopCarModel;
 
-typedef void (^OperationBlock) (NSIndexPath *indexPath,BOOL plus);
+typedef void (^OperationBlock) (NSIndexPath *oriIndexPath,BOOL plus);
 
 @interface ShopCarCell : UITableViewCell
 
@@ -20,6 +21,8 @@ typedef void (^OperationBlock) (NSIndexPath *indexPath,BOOL plus);
 @property (nonatomic) UIButton *minBtn;
 @property (nonatomic) NSIndexPath *indexPath;
 @property (nonatomic) int count;
+
+@property (nonatomic) ShopCarModel *model;
 
 @property (nonatomic,copy) OperationBlock operationBlock;
 @end

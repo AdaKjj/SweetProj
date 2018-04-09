@@ -153,6 +153,7 @@
 		E734426120737C0F00DB3B46 /* MenuModel.m in Sources */ = {isa = PBXBuildFile; fileRef = E734426020737C0F00DB3B46 /* MenuModel.m */; };
 		E7344267207477AE00DB3B46 /* OSSManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E7344266207477AE00DB3B46 /* OSSManager.m */; };
 		E734426A20748C5300DB3B46 /* OSSSTSModel.m in Sources */ = {isa = PBXBuildFile; fileRef = E734426920748C5300DB3B46 /* OSSSTSModel.m */; };
+		E734426D2074C90C00DB3B46 /* UIControl+hitTest.m in Sources */ = {isa = PBXBuildFile; fileRef = E734426C2074C90C00DB3B46 /* UIControl+hitTest.m */; };
 		E734EF15206A82C6000E7E0B /* ShopCarModel.m in Sources */ = {isa = PBXBuildFile; fileRef = E734EF14206A82C6000E7E0B /* ShopCarModel.m */; };
 		E736C925203E969A00DA24E1 /* TableViewCellItem.m in Sources */ = {isa = PBXBuildFile; fileRef = E736C924203E969A00DA24E1 /* TableViewCellItem.m */; };
 		E736C928203EA17500DA24E1 /* next_arrow_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E736C926203EA17500DA24E1 /* next_arrow_icon@2x.png */; };
@@ -547,6 +548,8 @@
 		E7344266207477AE00DB3B46 /* OSSManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OSSManager.m; sourceTree = "<group>"; };
 		E734426820748C5300DB3B46 /* OSSSTSModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OSSSTSModel.h; sourceTree = "<group>"; };
 		E734426920748C5300DB3B46 /* OSSSTSModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OSSSTSModel.m; sourceTree = "<group>"; };
+		E734426B2074C90C00DB3B46 /* UIControl+hitTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIControl+hitTest.h"; sourceTree = "<group>"; };
+		E734426C2074C90C00DB3B46 /* UIControl+hitTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIControl+hitTest.m"; sourceTree = "<group>"; };
 		E734EF13206A82C6000E7E0B /* ShopCarModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ShopCarModel.h; sourceTree = "<group>"; };
 		E734EF14206A82C6000E7E0B /* ShopCarModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ShopCarModel.m; sourceTree = "<group>"; };
 		E736C923203E969900DA24E1 /* TableViewCellItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TableViewCellItem.h; sourceTree = "<group>"; };
@@ -1399,6 +1402,8 @@
 		E73DA8C01FC52B7000BA9C65 /* Category */ = {
 			isa = PBXGroup;
 			children = (
+				E734426B2074C90C00DB3B46 /* UIControl+hitTest.h */,
+				E734426C2074C90C00DB3B46 /* UIControl+hitTest.m */,
 				E733EA01204CEA3400591F68 /* UIView+DDAddition.h */,
 				E733EA00204CEA3400591F68 /* UIView+DDAddition.m */,
 				E733E9FD204CE8C000591F68 /* UIButton+EdgeInsets.h */,
@@ -2073,6 +2078,7 @@
 				E73DA8CB1FC52BAD00BA9C65 /* UIImage+Alpha.m in Sources */,
 				E7323F331FFE2331000F802B /* UIView+WebCacheOperation.m in Sources */,
 				E7BC791E1FE9105A008D7293 /* PersonalSettingsVC.m in Sources */,
+				E734426D2074C90C00DB3B46 /* UIControl+hitTest.m in Sources */,
 				E71A4466200DE7B0005FA7F1 /* JFCityCollectionViewCell.m in Sources */,
 				E71A4468200DE7B0005FA7F1 /* JFAreaDataManager.m in Sources */,
 				E71A446C200DE7B0005FA7F1 /* JFCityTableViewCell.m in Sources */,

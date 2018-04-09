@@ -7,6 +7,7 @@
 //
 
 #import "ShopCarCell.h"
+#import "UIControl+hitTest.h"
 
 @implementation ShopCarCell
 
@@ -43,6 +44,7 @@
             make.height.equalTo(20);
             make.width.equalTo(20);
         }];
+        [_addBtn setHitTestEdgeInsets:UIEdgeInsetsMake(-10, -10, -10, -10)];
         
         _count = 0;
         
@@ -75,6 +77,7 @@
             make.height.equalTo(20);
             make.width.equalTo(20);
         }];
+        [_minBtn setHitTestEdgeInsets:UIEdgeInsetsMake(-10, -10, -10, -10)];
         
         _price = [[UILabel alloc] init];
         [_price setFont:systemFont(15)];

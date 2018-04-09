@@ -10,6 +10,8 @@
 #import "ShopCarModel.h"
 #import "MenuModel.h"
 
+typedef void(^RemoveCellBlock)(ShopCarModel *model);
+
 @class ShopCarModel;
 
 @class MenuModel;

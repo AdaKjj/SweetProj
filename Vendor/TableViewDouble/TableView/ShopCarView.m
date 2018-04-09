@@ -50,6 +50,7 @@
         }];
     }
 }
+
 - (void)onTouchDismiss {
     [UIView animateWithDuration:0.3 animations:^{
         [self setAlpha:0.0];
@@ -80,14 +81,33 @@
     if (!cell) {
         //单元格样式设置为UITableViewCellStyleDefault
         cell = [[ShopCarCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ID];
+        cell.model = [_shopCarArr objectAtIndex:indexPath.row];
         cell.name.text = [_shopCarArr objectAtIndex:indexPath.row].name;
         cell.countLabel.text = [NSString stringWithFormat:@"%ld",[_shopCarArr objectAtIndex:indexPath.row].count];
         cell.price.text = [NSString stringWithFormat:@"%.2f",[_shopCarArr objectAtIndex:indexPath.row].min_price];
         cell.indexPath = [_shopCarArr objectAtIndex:indexPath.row].indexPath;
         
-        cell.operationBlock = ^(NSIndexPath *indexPath, BOOL plus) {
+        WEAKSELF;
+        __block ShopCarCell *blockCell = cell;
+        cell.operationBlock = ^(NSIndexPath *oriIndexPath, BOOL plus) {
+            if (!plus) {
+                if ([cell.countLabel.text intValue] == 0) {
+                    ShopCarModel *deleteModel = blockCell.model;
+                    for (int i = 0; i<[self.shopCarArr count]; i++) {
+                        ShopCarModel *model = self.shopCarArr[i];
+                        if ([model.name isEqualToString:deleteModel.name]) {
+                            [weakSelf.shopCarArr removeObject:model];
+                            [weakSelf.tableView beginUpdates];
+                            [weakSelf.tableView deleteRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:i inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
+                            [weakSelf.tableView endUpdates];
+                            [weakSelf.tableView reloadData];
+                        }
+                    }
+                }
+            }
+            
             if (self.operationBlock) {
-                self.operationBlock(indexPath, plus);
+                self.operationBlock(oriIndexPath, plus);
             }
         };
     }
