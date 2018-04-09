@@ -79,7 +79,7 @@
 //网络请求过程中，出现任何错误（断网，连接超时等）会进入此方法
 -(void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
 {
-    NSLog(@"%@",[error localizedDescription]);
+    DLog(@"%@",[error localizedDescription]);
 }
 
 - (void)uploadImage:(UIImage *)image {
@@ -113,20 +113,20 @@
     put.objectKey = objectKeys;
     //put.uploadingFileURL = [NSURL fileURLWithPath:fullPath];
     put.uploadingData = imageData;
-    put.uploadProgress = ^(int64_t bytesSent, int64_t totalByteSent, int64_t totalBytesExpectedToSend) {
-        NSLog(@"%lld, %lld, %lld", bytesSent, totalByteSent, totalBytesExpectedToSend);
-    };
+//    put.uploadProgress = ^(int64_t bytesSent, int64_t totalByteSent, int64_t totalBytesExpectedToSend) {
+//        NSLog(@"%lld, %lld, %lld", bytesSent, totalByteSent, totalBytesExpectedToSend);
+//    };
     OSSTask * putTask = [_client putObject:put];
     
     [putTask continueWithBlock:^id(OSSTask *task) {
         task = [_client presignPublicURLWithBucketName:BUCKETNAME
                                         withObjectKey:objectKeys];
-        NSLog(@"objectKey: %@", put.objectKey);
+        DLog(@"objectKey: %@", put.objectKey);
         if (!task.error) {
-            NSLog(@"upload object success!");
+            DLog(@"upload object success!");
         }
         else {
-            NSLog(@"upload object failed, error: %@" , task.error);
+            DLog(@"upload object failed, error: %@" , task.error);
         }
         return nil;
     }];
@@ -161,7 +161,7 @@
     [getTask continueWithBlock:^id(OSSTask *task) {
         if (!task.error) {
             //下载成功后作一些处理
-            NSLog(@"download image success!");
+            DLog(@"download image success!");
             OSSGetObjectResult *getResult = task.result;
             _downloadData = getResult.downloadedData;
             if (self.downloadBlock) {

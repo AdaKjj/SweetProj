@@ -139,7 +139,7 @@ static float kLeftTableViewWidth = 100.f;
 }
 
 - (void)verBtnClicked {
-    NSLog(@"%@",_shopCarArr);
+    DLog(@"%@",_shopCarArr);
     
 //    ReservationInfoVC *vc = [[ReservationInfoVC alloc] init];
 //    

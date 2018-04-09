@@ -20,7 +20,7 @@
 
 #define BIANJU  22
 #define FONT_SMALL systemFont(13)
-@interface FoodDetailVC ()<QMapViewDelegate>
+@interface FoodDetailVC ()<QMapViewDelegate, UIScrollViewDelegate>
 
 @property (nonatomic) UIScrollView *scrollView;
 
@@ -66,6 +66,7 @@
     self.view.backgroundColor = [UIColor whiteColor];
     _scrollView = [[UIScrollView alloc] init];
     _scrollView.userInteractionEnabled = YES;
+    _scrollView.delegate = self;
     [self.view addSubview:_scrollView];
     _scrollView.backgroundColor = [UIColor whiteColor];
     [_scrollView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -82,7 +83,20 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated {
-    [self.navigationController setNavigationBarHidden:YES];
+    
+    [self.navigationController setNavigationBarHidden:NO];
+    //状态栏颜色
+    [self setStatusBarBackgroundColor:[UIColor whiteColor]];
+    
+    [self.navigationController.navigationBar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
+    self.navigationController.navigationBar.backgroundColor = [UIColor whiteColor];
+    self.navigationController.navigationBar.tintColor = [UIColor blackColor];
+    NSMutableDictionary *textAttrs = [NSMutableDictionary dictionary];
+    textAttrs[NSForegroundColorAttributeName] = [UIColor blackColor];
+    textAttrs[NSFontAttributeName] = [UIFont boldSystemFontOfSize:18];
+    [self.navigationController.navigationBar setTitleTextAttributes:textAttrs];
+    [self.navigationController.navigationBar setShadowImage:[UIImage imageWithColor:[UIColor whiteColor] size:CGSizeMake(self.view.frame.size.width, 0.5)]];
+    
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 
     NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
@@ -99,6 +113,24 @@
                name:@"singleRes"
              object:nil];
 }
+
+- (void)setStatusBarBackgroundColor:(UIColor *)color {
+    
+    UIView *statusBar = [[[UIApplication sharedApplication] valueForKey:@"statusBarWindow"] valueForKey:@"statusBar"];
+    if ([statusBar respondsToSelector:@selector(setBackgroundColor:)]) {
+        statusBar.backgroundColor = color;
+    }
+}
+
+//状态栏颜色
+//一定要在viewWillDisappear里面写，如果写在viewDidDisappear里面会出问题！！！！
+- (void)viewWillDisappear:(BOOL)animated{
+    [super viewWillDisappear:animated];
+    //为了不影响其他页面在viewDidDisappear做以下设置
+    self.navigationController.navigationBar.translucent = YES;//透明
+    [self setStatusBarBackgroundColor:[UIColor clearColor]];
+}
+
 - (void)dealloc {
     //移除观察者 self
     [[NSNotificationCenter defaultCenter] removeObserver:self];
@@ -119,25 +151,13 @@
 }
 
 - (void)setupScrollView {
-    UIImageView *topImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 150)];
+    UIImageView *topImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 180)];
     topImageView.backgroundColor = COLOR_LIGHTXX_GRAY;
     topImageView.contentMode = UIViewContentModeScaleAspectFill;
     topImageView.layer.masksToBounds = YES;
     [topImageView sd_setImageWithURL:[NSURL URLWithString:_surface]];;
     [_scrollView addSubview:topImageView];
     topImageView.userInteractionEnabled = YES;
-    
-    UIImage *round = [UIImage ellipseImageOfSize:CGSizeMake(40, 40) color:RGBA(50, 50, 50, 0.5)];
-    UIButton *backBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    [backBtn setImage:[UIImage imageNamed:@"btn_back"] forState:UIControlStateNormal];
-    [backBtn setBackgroundImage:round forState:UIControlStateNormal];
-    [backBtn addTarget:self action:@selector(onTouchBack) forControlEvents:UIControlEventTouchUpInside];
-    [topImageView addSubview:backBtn];
-    [backBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(15);
-        make.top.equalTo(15);
-        make.width.and.height.equalTo(40);
-    }];
     
     UILabel *storeLabel = [[UILabel alloc] init];
     [storeLabel setFont:BoldSystemFont(25)];
@@ -402,31 +422,31 @@
         make.right.equalTo(_mapView.mas_right).inset(5);
     }];
     
-    //圈子
-    UIImageView *lineImageView2 = [[UIImageView alloc]initWithImage:lineImage];
-    [self.scrollView addSubview:lineImageView2];
-    [lineImageView2 mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(_mapView.bottom).inset(30);
-        make.left.equalTo(BIANJU);
-        make.height.equalTo(3);
-        make.width.equalTo(SCREEN_WIDTH - BIANJU*2);
-    }];
+//    //圈子
+//    UIImageView *lineImageView2 = [[UIImageView alloc]initWithImage:lineImage];
+//    [self.scrollView addSubview:lineImageView2];
+//    [lineImageView2 mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.top.equalTo(_mapView.bottom).inset(30);
+//        make.left.equalTo(BIANJU);
+//        make.height.equalTo(3);
+//        make.width.equalTo(SCREEN_WIDTH - BIANJU*2);
+//    }];
+//
+//    UILabel *circleLabel = [[UILabel alloc] init];
+//    circleLabel.text = @"圈子";
+//    circleLabel.textColor = [UIColor blackColor];
+//    circleLabel.textAlignment = NSTextAlignmentCenter;
+//    circleLabel.backgroundColor = [UIColor whiteColor];
+//    [circleLabel setFont:systemFont(16)];
+//    [self.scrollView addSubview:circleLabel];
+//    [circleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.centerX.equalTo(lineImageView2.mas_centerX);
+//        make.centerY.equalTo(lineImageView2.mas_centerY);
+//        make.width.equalTo(60);
+//        make.height.equalTo(30);
+//    }];
     
-    UILabel *circleLabel = [[UILabel alloc] init];
-    circleLabel.text = @"圈子";
-    circleLabel.textColor = [UIColor blackColor];
-    circleLabel.textAlignment = NSTextAlignmentCenter;
-    circleLabel.backgroundColor = [UIColor whiteColor];
-    [circleLabel setFont:systemFont(16)];
-    [self.scrollView addSubview:circleLabel];
-    [circleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.centerX.equalTo(lineImageView2.mas_centerX);
-        make.centerY.equalTo(lineImageView2.mas_centerY);
-        make.width.equalTo(60);
-        make.height.equalTo(30);
-    }];
-    
-    _scrollView.contentSize = CGSizeMake(SCREEN_WIDTH, 1300);
+    _scrollView.contentSize = CGSizeMake(SCREEN_WIDTH, 1170);
     
     UITapGestureRecognizer *tapGestureRecognizer1 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(scanBigImageClick1:)];
     [morePhotoImageView1 addGestureRecognizer:tapGestureRecognizer1];
@@ -446,6 +466,7 @@
     self.shopDetailModel = [[ShopDetailModel alloc] initWithDictionary:valueDic error:nil];
     self.business_hours = self.shopDetailModel.shopdes.business_hours;
     self.name        = self.shopDetailModel.shopdes.name;
+    self.title       = self.shopDetailModel.shopdes.name;
     self.classify    = self.shopDetailModel.shopdes.classify;
     self.avecon      = self.shopDetailModel.shopdes.avecon;
     self.introduce   = self.shopDetailModel.shopdes.introduce;
@@ -465,19 +486,6 @@
         [self setupMapDetail];
         [self configAppointmentToolBar];
     }
-    else {
-        UIImage *round = [UIImage ellipseImageOfSize:CGSizeMake(40, 40) color:RGBA(50, 50, 50, 0.5)];
-        UIButton *backBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        [backBtn setImage:[UIImage imageNamed:@"btn_back"] forState:UIControlStateNormal];
-        [backBtn setBackgroundImage:round forState:UIControlStateNormal];
-        [backBtn addTarget:self action:@selector(onTouchBack) forControlEvents:UIControlEventTouchUpInside];
-        [self.view addSubview:backBtn];
-        [backBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.left.equalTo(15);
-            make.top.equalTo(15);
-            make.width.and.height.equalTo(40);
-        }];
-    }
 }
 
 //TODO：圈子
@@ -486,7 +494,7 @@
 }
 
 -(void)scanBigImageClick1:(UITapGestureRecognizer *)tap{
-    NSLog(@"点击图片");
+    DLog(@"点击图片");
     UIImageView *clickedImageView = (UIImageView *)tap.view;
     [XWScanImage scanBigImageWithImageView:clickedImageView];
 }
@@ -625,7 +633,7 @@
  @param lineSpace 行间距
  @return 返回添加行间距后的字
  */
--(NSAttributedString *)getAttributedStringWithString:(NSString *)string lineSpace:(CGFloat)lineSpace {
+- (NSAttributedString *)getAttributedStringWithString:(NSString *)string lineSpace:(CGFloat)lineSpace {
     NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:string];
     NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
     paragraphStyle.lineSpacing = lineSpace; // 调整行间距
@@ -655,17 +663,12 @@
     });
 }
 
-- (void)onTouchBack {
-    [self.navigationController popViewControllerAnimated:YES];
-}
-
 - (void)appointmentBtnClicked {
     SelectionVC *vc = [SelectionVC new];
     [self presentViewController:vc animated:NO completion:nil];
-    //[self pushViewController:vc animated:YES];
 }
 
-#pragma mark - Delegate
+#pragma mark - MapDelegate
 - (QAnnotationView *)mapView:(QMapView *)mapView
           viewForAnnotation:(id<QAnnotation>)annotation {
     static NSString *pointReuseIndentifier = @"pointReuseIdentifier";
@@ -697,5 +700,23 @@
     return nil;
 }
 
+#pragma mark - ScrollViewDelegate
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView
+{
+    //scrollView已经有拖拽手势，直接拿到scrollView的拖拽手势
+    UIPanGestureRecognizer *pan = scrollView.panGestureRecognizer;
+    //获取到拖拽的速度 >0 向下拖动 <0 向上拖动
+    CGFloat velocity = [pan velocityInView:scrollView].y;
+
+    if (velocity <- 5) {
+        //向上拖动，隐藏导航栏
+        [self.navigationController setNavigationBarHidden:YES animated:YES];
+    }else if (velocity > 5) {
+        //向下拖动，显示导航栏
+        [self.navigationController setNavigationBarHidden:NO animated:YES];
+    }else if(velocity == 0){
+        //停止拖拽
+    }
+}
 
 @end

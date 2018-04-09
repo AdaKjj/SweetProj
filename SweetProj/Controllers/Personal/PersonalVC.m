@@ -106,7 +106,7 @@
 
 // - 浏览大图点击事件
 -(void)scanBigImageClick1:(UITapGestureRecognizer *)tap{
-    NSLog(@"点击图片");
+    DLog(@"点击图片");
     UIImageView *clickedImageView = (UIImageView *)tap.view;
     [XWScanImage scanBigImageWithImageView:clickedImageView];
 }

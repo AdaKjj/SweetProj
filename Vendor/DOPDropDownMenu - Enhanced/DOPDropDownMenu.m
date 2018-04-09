@@ -345,7 +345,7 @@
                 self.finishedBlock(self.currentIndexPath);
             }
         }
-        NSLog(@"收回");
+        DLog(@"收回");
     }
 }
 #pragma mark - init method

@@ -56,7 +56,7 @@
 //网络请求过程中，出现任何错误（断网，连接超时等）会进入此方法
 -(void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
 {
-    NSLog(@"%@",[error localizedDescription]);
+    DLog(@"%@",[error localizedDescription]);
 }
 
 @end

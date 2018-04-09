@@ -398,7 +398,7 @@
     NSData *data = UIImageJPEGRepresentation(self, 1.0);
     
     [data writeToFile:filePath atomically:YES];
-    NSLog(@"%@", NSTemporaryDirectory());
+    DLog(@"%@", NSTemporaryDirectory());
 }
 
 @end

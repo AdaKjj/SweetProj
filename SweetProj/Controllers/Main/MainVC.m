@@ -465,7 +465,7 @@
 #pragma mark --- JFLocationDelegate
 //定位中...
 - (void)locating {
-    NSLog(@"定位中...");
+    DLog(@"定位中...");
 }
 
 //定位成功
@@ -491,12 +491,12 @@
 
 /// 拒绝定位
 - (void)refuseToUsePositioningSystem:(NSString *)message {
-    NSLog(@"%@",message);
+    DLog(@"%@",message);
 }
 
 /// 定位失败
 - (void)locateFailure:(NSString *)message {
-    NSLog(@"%@",message);
+    DLog(@"%@",message);
 }
 
 #pragma mark collectionView代理方法

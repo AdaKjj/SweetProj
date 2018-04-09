@@ -33,7 +33,6 @@
 //接收到服务器回应的时候调用此方法
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response
 {
-    NSHTTPURLResponse *res = (NSHTTPURLResponse *)response;
     buff = [NSMutableData data];
 }
 //接收到服务器传输数据的时候调用，此方法根据数据大小执行若干次
@@ -53,7 +52,7 @@
 //网络请求过程中，出现任何错误（断网，连接超时等）会进入此方法
 -(void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
 {
-    NSLog(@"%@",[error localizedDescription]);
+    DLog(@"%@",[error localizedDescription]);
 }
 
 @end
