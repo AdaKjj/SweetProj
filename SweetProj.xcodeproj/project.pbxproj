@@ -268,6 +268,7 @@
 		E7D9D7DF1FEA5890001F647A /* text1.png in Resources */ = {isa = PBXBuildFile; fileRef = E7D9D7DA1FEA588F001F647A /* text1.png */; };
 		E7D9D7E01FEA5890001F647A /* text2.png in Resources */ = {isa = PBXBuildFile; fileRef = E7D9D7DB1FEA588F001F647A /* text2.png */; };
 		E7D9D7E11FEA5890001F647A /* text3.png in Resources */ = {isa = PBXBuildFile; fileRef = E7D9D7DC1FEA588F001F647A /* text3.png */; };
+		E7D9E8AB207B64DC00D4A51D /* ConfirmTBCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E7D9E8AA207B64DC00D4A51D /* ConfirmTBCell.m */; };
 		E7E2C3E0204CF50100960112 /* order_double@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E7E2C3DD204CF50000960112 /* order_double@2x.png */; };
 		E7E2C3E1204CF50100960112 /* order_seat@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E7E2C3DE204CF50000960112 /* order_seat@2x.png */; };
 		E7E2C3E2204CF50100960112 /* order_single@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E7E2C3DF204CF50100960112 /* order_single@2x.png */; };
@@ -702,6 +703,8 @@
 		E7D9D7DA1FEA588F001F647A /* text1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = text1.png; sourceTree = "<group>"; };
 		E7D9D7DB1FEA588F001F647A /* text2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = text2.png; sourceTree = "<group>"; };
 		E7D9D7DC1FEA588F001F647A /* text3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = text3.png; sourceTree = "<group>"; };
+		E7D9E8A9207B64DC00D4A51D /* ConfirmTBCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ConfirmTBCell.h; sourceTree = "<group>"; };
+		E7D9E8AA207B64DC00D4A51D /* ConfirmTBCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ConfirmTBCell.m; sourceTree = "<group>"; };
 		E7E2C3DD204CF50000960112 /* order_double@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "order_double@2x.png"; sourceTree = "<group>"; };
 		E7E2C3DE204CF50000960112 /* order_seat@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "order_seat@2x.png"; sourceTree = "<group>"; };
 		E7E2C3DF204CF50100960112 /* order_single@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "order_single@2x.png"; sourceTree = "<group>"; };
@@ -1215,6 +1218,8 @@
 				E738397A202193350042275B /* ConfirmReservationVC.m */,
 				E738FAFD2036D3660086AB66 /* PayVC.h */,
 				E738FAFE2036D3660086AB66 /* PayVC.m */,
+				E7D9E8A9207B64DC00D4A51D /* ConfirmTBCell.h */,
+				E7D9E8AA207B64DC00D4A51D /* ConfirmTBCell.m */,
 			);
 			path = Reservation;
 			sourceTree = "<group>";
@@ -2081,6 +2086,7 @@
 				E734426D2074C90C00DB3B46 /* UIControl+hitTest.m in Sources */,
 				E71A4466200DE7B0005FA7F1 /* JFCityCollectionViewCell.m in Sources */,
 				E71A4468200DE7B0005FA7F1 /* JFAreaDataManager.m in Sources */,
+				E7D9E8AB207B64DC00D4A51D /* ConfirmTBCell.m in Sources */,
 				E71A446C200DE7B0005FA7F1 /* JFCityTableViewCell.m in Sources */,
 				E7397F01203D569F005B2EB5 /* OrderModel.m in Sources */,
 				E728829B1FCEA8060048AC54 /* Global.m in Sources */,

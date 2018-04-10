@@ -21,6 +21,9 @@
 @property (nonatomic) UITextFieldPhone *telTF;
 @property (nonatomic) UITextField *infoTF;
 @property (nonatomic, strong) UIDatePicker *timePicker;
+
+@property (nonatomic) UIControl *baseControl;
+
 @end
 
 @implementation ReservationInfoVC
@@ -40,6 +43,10 @@
         make.height.equalTo(self.view.height);
         make.width.equalTo(self.view.width);
     }];
+    
+    _baseControl = [[UIControl alloc] initWithFrame:self.view.bounds];
+    _baseControl.backgroundColor = [UIColor clearColor];
+    [_baseControl addTarget:self action:@selector(onTouchDismiss:) forControlEvents:UIControlEventTouchUpInside];
     
     [self setupOrderView];
 }
@@ -63,8 +70,8 @@
     [self.view addSubview:orderBg];
     [orderBg mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerX.centerY.equalTo(0);
-        make.height.equalTo(SCREEN_HEIGHT - 180);
-        make.width.equalTo (SCREEN_WIDTH - 80);
+        make.height.equalTo(500);
+        make.width.equalTo (SCREEN_WIDTH - 60);
     }];
     
     UILabel *titleLabel = [[UILabel alloc] init];
@@ -95,13 +102,13 @@
     NSMutableParagraphStyle *paragraphStyle = NSMutableParagraphStyle.new;
     paragraphStyle.alignment = NSTextAlignmentCenter;
 
-    
     _timeTF = [[UITextField alloc] init];
     _timeTF.borderStyle = UITextBorderStyleNone;
     self.timeTF.attributedPlaceholder = [NSAttributedString.alloc initWithString:@"请选择"
                                                                       attributes:@{NSParagraphStyleAttributeName:paragraphStyle}];
     _timeTF.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
     _timeTF.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
+    _timeTF.textAlignment = NSTextAlignmentCenter;
     _timeTF.layer.borderWidth = 1.0f;
     _timeTF.layer.cornerRadius = 5;
     _timeTF.font = systemFont(15);
@@ -135,6 +142,7 @@
     _countTF.keyboardType = UIKeyboardTypeNumberPad;
     _countTF.borderStyle = UITextBorderStyleNone;
     _countTF.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
+    _countTF.textAlignment = NSTextAlignmentCenter;
     _countTF.layer.borderWidth = 1.0f;
     _countTF.layer.cornerRadius = 5;
     _countTF.font = systemFont(15);
@@ -146,7 +154,6 @@
         make.height.equalTo(26);
     }];
     _countTF.delegate = self;
-    
     
     UILabel *nameLabel = [[UILabel alloc] init];
     nameLabel.text = @"姓名 ：";
@@ -166,6 +173,7 @@
     _nameTF.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
     _nameTF.layer.borderWidth = 1.0f;
     _nameTF.layer.cornerRadius = 5;
+    _nameTF.textAlignment = NSTextAlignmentCenter;
     _nameTF.font = systemFont(15);
     [orderBg addSubview:_nameTF];
     [_nameTF mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -193,6 +201,7 @@
     _telTF.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
     _telTF.layer.borderWidth = 1.0f;
     _telTF.layer.cornerRadius = 5;
+    _telTF.textAlignment = NSTextAlignmentCenter;
     _telTF.font = systemFont(15);
     [orderBg addSubview:_telTF];
     [_telTF mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -219,6 +228,7 @@
     _infoTF.borderStyle = UITextBorderStyleNone;
     _infoTF.layer.borderWidth = 1.0f;
     _infoTF.layer.cornerRadius = 5;
+    _infoTF.contentVerticalAlignment = UIControlContentVerticalAlignmentTop;
     _infoTF.font = systemFont(15);
     [orderBg addSubview:_infoTF];
     [_infoTF mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -239,7 +249,7 @@
     [_orderBtn addTarget:self action:@selector(orderBtnClicked) forControlEvents:UIControlEventTouchUpInside];
     [orderBg addSubview:_orderBtn];
     [_orderBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.width.equalTo(70);
+        make.left.equalTo(infoLabel.mas_left);
         make.height.equalTo(38);
         make.right.equalTo(-45);
         make.bottom.equalTo(-40);
@@ -249,12 +259,35 @@
 
 - (void)orderBtnClicked {
     ConfirmReservationVC *vc = [[ConfirmReservationVC alloc] init];
+    vc.shopCarArr = _shopCarArr;
+    vc.totalPrice = self.totalPrice;
     [self.navigationController pushViewController:vc animated:YES];
 }
 
 #pragma mark - textFieldDelegate
-- (BOOL)textFieldShouldReturn:(UITextField *)textField
+- (void)onTouchDismiss:(id)sender
 {
+    [self.view endEditing:YES];
+    [_baseControl removeFromSuperview];
+}
+
+- (void)textFieldDidBeginEditing:(UITextField *)textField {
+    [self.view addSubview:_baseControl];
+}
+
+//完成
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+//    NSString *str = textField.text;
+//    str = [str stringByReplacingOccurrencesOfString:@" " withString:@""];
+//
+//    if (!str){
+//        //有
+//        return YES;
+//    }
+//    else{
+//        [textField resignFirstResponder];
+//        return YES;
+//    }
     [textField resignFirstResponder];
     return YES;
 }
@@ -262,9 +295,11 @@
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
 {
     // 不能加空格
-    NSString *tem = [[string componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]]componentsJoinedByString:@""];
-    if (![string isEqualToString:tem]) {
-        return  NO;
+    if (textField != _infoTF) {
+        NSString *tem = [[string componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]]componentsJoinedByString:@""];
+        if (![string isEqualToString:tem]) {
+            return  NO;
+        }
     }
     return YES;
 }

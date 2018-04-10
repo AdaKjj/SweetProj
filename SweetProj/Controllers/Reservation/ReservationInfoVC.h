@@ -10,4 +10,6 @@
 
 @interface ReservationInfoVC : UIViewController
 
+@property (nonatomic) NSArray *shopCarArr;
+@property (nonatomic) float totalPrice;
 @end

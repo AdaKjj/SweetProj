@@ -100,7 +100,10 @@
                             [weakSelf.tableView beginUpdates];
                             [weakSelf.tableView deleteRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:i inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
                             [weakSelf.tableView endUpdates];
-                            [weakSelf.tableView reloadData];
+                            
+                            if ([_shopCarArr count] == 0) {
+                                [weakSelf onTouchDismiss];
+                            }
                         }
                     }
                 }

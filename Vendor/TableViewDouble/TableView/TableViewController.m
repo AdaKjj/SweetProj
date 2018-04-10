@@ -19,7 +19,7 @@
 
 #import "ShopCarView.h"
 
-static float kLeftTableViewWidth = 100.f;
+static float kLeftTableViewWidth = 80.f;
 
 @interface TableViewController () <UITableViewDelegate, UITableViewDataSource, CAAnimationDelegate>
 
@@ -56,6 +56,14 @@ static float kLeftTableViewWidth = 100.f;
     _selectIndex = 0;
     _isScrollDown = YES;
     _shopcarCount = 0;
+    
+    _leftTableView.estimatedRowHeight = 0;
+    _leftTableView.estimatedSectionHeaderHeight = 0;
+    _leftTableView.estimatedSectionFooterHeight = 0;
+    
+    _rightTableView.estimatedRowHeight = 0;
+    _rightTableView.estimatedSectionHeaderHeight = 0;
+    _rightTableView.estimatedSectionFooterHeight = 0;
     
     MenuManager *manager = [[MenuManager alloc] init];
     manager.tbVC = self;
@@ -141,9 +149,10 @@ static float kLeftTableViewWidth = 100.f;
 - (void)verBtnClicked {
     DLog(@"%@",_shopCarArr);
     
-//    ReservationInfoVC *vc = [[ReservationInfoVC alloc] init];
-//    
-//    [self.navigationController pushViewController:vc animated:YES];
+    ReservationInfoVC *vc = [[ReservationInfoVC alloc] init];
+    vc.shopCarArr = _shopCarArr;
+    vc.totalPrice = self.price;
+    [self.navigationController pushViewController:vc animated:YES];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -162,7 +171,6 @@ static float kLeftTableViewWidth = 100.f;
 }
 
 - (void)setStatusBarBackgroundColor:(UIColor *)color {
-    
     UIView *statusBar = [[[UIApplication sharedApplication] valueForKey:@"statusBarWindow"] valueForKey:@"statusBar"];
     if ([statusBar respondsToSelector:@selector(setBackgroundColor:)]) {
         statusBar.backgroundColor = color;
@@ -194,8 +202,7 @@ static float kLeftTableViewWidth = 100.f;
 
 - (NSMutableArray *)categoryData
 {
-    if (!_categoryData)
-    {
+    if (!_categoryData) {
         _categoryData = [NSMutableArray array];
     }
     return _categoryData;
@@ -203,8 +210,7 @@ static float kLeftTableViewWidth = 100.f;
 
 - (NSMutableArray *)foodData
 {
-    if (!_foodData)
-    {
+    if (!_foodData) {
         _foodData = [NSMutableArray array];
     }
     return _foodData;
@@ -212,8 +218,7 @@ static float kLeftTableViewWidth = 100.f;
 
 - (NSMutableArray *)photoArr
 {
-    if (!_photoArr)
-    {
+    if (!_photoArr) {
         _photoArr = [NSMutableArray array];
     }
     return _photoArr;
@@ -221,8 +226,7 @@ static float kLeftTableViewWidth = 100.f;
 
 - (UITableView *)leftTableView
 {
-    if (!_leftTableView)
-    {
+    if (!_leftTableView) {
         _leftTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, kLeftTableViewWidth, SCREEN_HEIGHT - 50)];
         _leftTableView.delegate = self;
         _leftTableView.dataSource = self;
@@ -238,8 +242,7 @@ static float kLeftTableViewWidth = 100.f;
 
 - (UITableView *)rightTableView
 {
-    if (!_rightTableView)
-    {
+    if (!_rightTableView) {
         _rightTableView = [[UITableView alloc] initWithFrame:CGRectMake(kLeftTableViewWidth, 0, SCREEN_WIDTH, SCREEN_HEIGHT - 50)];
         _rightTableView.delegate = self;
         _rightTableView.dataSource = self;
@@ -282,7 +285,7 @@ static float kLeftTableViewWidth = 100.f;
             [self.categoryData addObject:model];
         }
         int k = 0;
-        for(int i=0; i<self.categoryData.count; i++) {
+        for (int i=0; i<self.categoryData.count; i++) {
             ItemListModel *listModel = self.categoryData[i];
             NSMutableArray *listArr = [NSMutableArray array];
             for (int j=0; j<listModel.item.count; j++) {
@@ -310,24 +313,18 @@ static float kLeftTableViewWidth = 100.f;
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    if (_leftTableView == tableView)
-    {
+    if (_leftTableView == tableView) {
         return 1;
-    }
-    else
-    {
+    } else {
         return [self.categoryData count];
     }
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    if (_leftTableView == tableView)
-    {
+    if (_leftTableView == tableView) {
         return [self.categoryData count];
-    }
-    else
-    {
+    } else {
         NSMutableArray *arr = self.foodData[section];
         return arr.count;
     }
@@ -335,16 +332,13 @@ static float kLeftTableViewWidth = 100.f;
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (_leftTableView == tableView)
-    {
+    if (_leftTableView == tableView) {
         LeftTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kCellIdentifier_Left forIndexPath:indexPath];
         ItemListModel *itemListModel = self.categoryData[indexPath.row];
         cell.name.text = itemListModel.name;
         
         return cell;
-    }
-    else
-    {
+    } else {
         RightTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kCellIdentifier_Right forIndexPath:indexPath];
         
         ItemModel *itemModel = self.foodData[indexPath.section][indexPath.row];
@@ -358,8 +352,6 @@ static float kLeftTableViewWidth = 100.f;
             itemModel.count = [NSNumber numberWithInteger:number];
             
             [weakSelf.foodData[indexPath.section] replaceObjectAtIndex:indexPath.row withObject:itemModel];
-            
-            [self.rightTableView reloadRowsAtIndexPaths:[NSArray arrayWithObjects:indexPath,nil] withRowAnimation:UITableViewRowAnimationNone];
             
             if (plus) {
                 _price += itemModel.univalence;
