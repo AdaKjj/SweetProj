@@ -32,7 +32,7 @@
         [self.contentView addSubview:_storNameLabel];
         [_storNameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
             make.left.equalTo(_storeImageView.mas_left);
-            make.top.equalTo(_storeImageView.bottom);
+            make.top.equalTo(_storeImageView.mas_bottom);
             make.width.equalTo(100);
             make.height.equalTo(20);
         }];
@@ -43,7 +43,7 @@
         [self.contentView addSubview:_numOfCommentLabel];
         [_numOfCommentLabel mas_makeConstraints:^(MASConstraintMaker *make) {
             make.right.equalTo(0);
-            make.top.equalTo(_storeImageView.bottom);
+            make.top.equalTo(_storeImageView.mas_bottom);
             make.width.equalTo(100);
             make.height.equalTo(20);
         }];
@@ -53,7 +53,7 @@
         [self.contentView addSubview:_typeLabel];
         [_typeLabel mas_makeConstraints:^(MASConstraintMaker *make) {
             make.left.equalTo(_storeImageView.mas_left);
-            make.top.equalTo(_storNameLabel.bottom);
+            make.top.equalTo(_storNameLabel.mas_bottom);
             make.width.equalTo(100);
             make.height.equalTo(20);
         }];
@@ -65,7 +65,7 @@
         [self.contentView addSubview:_distanceLabel];
         [_distanceLabel mas_makeConstraints:^(MASConstraintMaker *make) {
             make.right.equalTo(0);
-            make.top.equalTo(_storNameLabel.bottom);
+            make.top.equalTo(_storNameLabel.mas_bottom);
             make.width.equalTo(100);
             make.height.equalTo(20);
         }];

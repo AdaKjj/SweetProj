@@ -37,8 +37,8 @@
         _countLabel.textAlignment = NSTextAlignmentCenter;
         [self.contentView addSubview:_countLabel];
         [_countLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.left.equalTo(_iconImage.right).inset(8);
-            make.top.equalTo(_iconImage.top);
+            make.left.equalTo(_iconImage.mas_right).inset(8);
+            make.top.equalTo(_iconImage.mas_top);
             make.width.equalTo(58);
             make.height.equalTo(16);
         }];
@@ -48,8 +48,8 @@
         _moduleLabel.textAlignment = NSTextAlignmentCenter;
         [self.contentView addSubview:_moduleLabel];
         [_moduleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.left.equalTo(_iconImage.right).inset(8);
-            make.bottom.equalTo(_iconImage.bottom);
+            make.left.equalTo(_iconImage.mas_right).inset(8);
+            make.bottom.equalTo(_iconImage.mas_bottom);
             make.width.equalTo(58);
             make.height.equalTo(16);
         }];

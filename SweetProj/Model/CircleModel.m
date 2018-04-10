@@ -8,6 +8,14 @@
 
 #import "CircleModel.h"
 
-@implementation CircleModel
+@implementation CircleItem
++ (JSONKeyMapper *)keyMapper{
+    return [JSONKeyMapper mapperForSnakeCase];
+}
+@end
 
+@implementation CircleModel
++ (JSONKeyMapper *)keyMapper{
+    return [JSONKeyMapper mapperForSnakeCase];
+}
 @end

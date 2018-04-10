@@ -46,7 +46,7 @@
         _shopNameLabel.textColor = [UIColor whiteColor];
         [self.contentView addSubview:_shopNameLabel];
         [_shopNameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.left.equalTo(_shopImageView.right).inset(10);
+            make.left.equalTo(_shopImageView.mas_right).inset(10);
             make.top.equalTo(10);
             make.width.equalTo(SCREEN_WIDTH - 60);
             make.height.equalTo(10);
@@ -57,7 +57,7 @@
         _cardNameLabel.textColor = [UIColor whiteColor];
         [self.contentView addSubview:_cardNameLabel];
         [_cardNameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.left.equalTo(_shopImageView.right).inset(10);
+            make.left.equalTo(_shopImageView.mas_right).inset(10);
             make.top.equalTo(_shopNameLabel.mas_bottom).equalTo(10);
             make.width.equalTo(SCREEN_WIDTH - 60);
             make.height.equalTo(28);

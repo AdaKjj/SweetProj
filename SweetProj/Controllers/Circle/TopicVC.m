@@ -9,10 +9,21 @@
 #import "TopicVC.h"
 #import "UIImage+Addition.h"
 #import "TopicTableViewCell.h"
+#import "UIButton+EdgeInsets.h"
+#import "TopicItemCell.h"
+#import "CircleModel.h"
+#import "UITableView+FDTemplateLayoutCell.h"
+#import "CircleManager.h"
+#import <YYLabel.h>
+
+#define UIScreenWidth   [UIScreen mainScreen].bounds.size.width
+#define UIScreenHeight  [UIScreen mainScreen].bounds.size.height
+#define LayoutWidth     (UIScreenWidth - margin*2 - 40 - 8*2 - 10)
 
 @interface TopicVC ()<UISearchBarDelegate,UITableViewDelegate,UITableViewDataSource>
 
-@property (nonatomic) UIImageView *avatarImageView;
+@property (nonatomic) UIButton *addTopicBtn;
+@property (nonatomic) UIImageView *lineImageView;
 
 @property (nonatomic) UIButton *friendsBtn;
 @property (nonatomic) UIButton *todayBtn;
@@ -24,6 +35,8 @@
 
 @end
 
+static CGFloat margin = 20.f;
+
 @implementation TopicVC
 
 - (void)viewDidLoad {
@@ -34,21 +47,26 @@
     self.automaticallyAdjustsScrollViewInsets = NO;
     self.edgesForExtendedLayout = UIRectEdgeNone;
     
-    _avatarImageView = [[UIImageView alloc]init];
-    _avatarImageView.backgroundColor = [UIColor grayColor];
-    _avatarImageView.layer.masksToBounds = YES;
-    _avatarImageView.layer.cornerRadius = 22.0;
-    [self.view addSubview:_avatarImageView];
-    [_avatarImageView mas_makeConstraints:^(MASConstraintMaker *make) {
+    _addTopicBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    [_addTopicBtn setTitle:@"发布" forState:UIControlStateNormal];
+    [_addTopicBtn setImage:[UIImage imageNamed:@"头像"] forState:UIControlStateNormal];
+    [_addTopicBtn addTarget:self action:@selector(onTouchAddTopic) forControlEvents:UIControlEventTouchUpInside];
+    [_addTopicBtn setTitleColor:SYSTEMCOLOR forState:UIControlStateNormal];
+    [_addTopicBtn.titleLabel setFont:systemFont(14)];
+    _addTopicBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
+    _addTopicBtn.contentVerticalAlignment = UIControlContentVerticalAlignmentTop;
+    [_addTopicBtn layoutButtonWithEdgeInsetsStyle:ButtonEdgeInsetsStyleImageTop imageTitlespace:3];
+    [self.view addSubview:_addTopicBtn];
+    [_addTopicBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(-25);
         make.top.equalTo(25);
         make.height.width.equalTo(44);
     }];
     
-    // 添加边框
-    CALayer * layer = [_avatarImageView layer];
-    layer.borderColor = RGB(173, 173, 173).CGColor;
-    layer.borderWidth = 2.0f;
+//    // 添加边框
+//    CALayer * layer = [_avatarImageView layer];
+//    layer.borderColor = RGB(173, 173, 173).CGColor;
+//    layer.borderWidth = 2.0f;
     
     _friendsBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     _friendsBtn.selected = YES;
@@ -76,7 +94,7 @@
     [self.view addSubview:_todayBtn];
     [_todayBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(30);
-        make.left.equalTo(_friendsBtn.right).inset(15);
+        make.left.equalTo(_friendsBtn.mas_right).inset(15);
         make.width.equalTo(40);
         make.height.equalTo(25);
     }];
@@ -91,16 +109,16 @@
     [self.view addSubview:_circleBtn];
     [_circleBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(30);
-        make.left.equalTo(_todayBtn.right).equalTo(15);
+        make.left.equalTo(_todayBtn.mas_right).equalTo(15);
         make.width.equalTo(40);
         make.height.equalTo(25);
     }];
     
     UIImage *lingImage = [UIImage imageWithColor:RGB(173, 173, 173) size:CGSizeMake(SCREEN_WIDTH - 50, 3.0)];
-    UIImageView *lineImageView = [[UIImageView alloc]initWithImage:lingImage];
-    [self.view addSubview:lineImageView];
-    [lineImageView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(_avatarImageView.bottom).inset(10);
+    UIImageView *_lineImageView = [[UIImageView alloc]initWithImage:lingImage];
+    [self.view addSubview:_lineImageView];
+    [_lineImageView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(_addTopicBtn.mas_bottom).equalTo(10);
         make.left.equalTo(20);
         make.height.equalTo(3);
         make.width.equalTo(SCREEN_WIDTH - 40);
@@ -109,13 +127,21 @@
     self.photoTableView = [[UITableView alloc] init];
     self.photoTableView.dataSource = self;
     self.photoTableView.delegate = self;
+    self.photoTableView.tableHeaderView = nil;
+    [self.photoTableView registerClass:[TopicItemCell class] forCellReuseIdentifier:@"TopicCell"];
     [self.photoTableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
     [self.view addSubview: self.photoTableView];
     [self.photoTableView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(lineImageView.mas_bottom);
+        make.top.mas_equalTo(_lineImageView.mas_bottom);
         make.left.right.equalTo(0);
         make.bottom.equalTo(0);
     }];
+    
+    CircleManager *manager = [CircleManager new];
+    manager.type = @"朋友";
+    manager.start = @"0";
+    manager.topicVC = self;
+    [manager sendRequestWithType:@"朋友" andStart:@"0"];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -127,18 +153,57 @@
     _friendsBtn.selected = YES;
     _todayBtn.selected = NO;
     _circleBtn.selected = NO;
+    
+    
+    CircleManager *manager = [CircleManager new];
+    manager.type = @"朋友";
+    manager.start = @"0";
+    manager.topicVC = self;
+    [manager sendRequestWithType:@"朋友" andStart:@"0"];
 }
 
 - (void)todayBtnClick {
     _friendsBtn.selected = NO;
     _todayBtn.selected = YES;
     _circleBtn.selected = NO;
+    CircleManager *manager = [CircleManager new];
+    manager.type = @"今日";
+    manager.start = @"0";
+    manager.topicVC = self;
+    [manager sendRequestWithType:@"今日" andStart:@"0"];
 }
 
 - (void)circleBtnClick {
     _friendsBtn.selected = NO;
     _todayBtn.selected = NO;
     _circleBtn.selected = YES;
+    CircleManager *manager = [CircleManager new];
+    manager.type = @"广场";
+    manager.start = @"0";
+    manager.topicVC = self;
+    [manager sendRequestWithType:@"广场" andStart:@"0"];
+}
+
+- (void)getCircleArr:(NSDictionary *)jsonDic {
+    self.circleArr = [[CircleModel alloc] initWithDictionary:jsonDic error:nil];
+    
+    if (!self.photoTableView) {
+        self.photoTableView = [[UITableView alloc] init];
+        self.photoTableView.dataSource = self;
+        self.photoTableView.delegate = self;
+        self.photoTableView.tableHeaderView = nil;
+        [self.photoTableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
+        [self.view addSubview: self.photoTableView];
+        [self.photoTableView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.top.equalTo(_lineImageView.mas_bottom);
+            make.left.right.equalTo(0);
+            make.bottom.equalTo(0);
+        }];
+    }
+    else {
+        [self.photoTableView reloadData];
+    }
+
 }
 
 - (void)setupSearchBar
@@ -159,72 +224,86 @@
     self.navigationItem.titleView = titleView;
 }
 
-#pragma tableViewDelegate
-// 分区个数
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    
-    //分区设置为1m
-    return 1;
+#pragma mark -  tableViewDelegate
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    return [self.circleArr.circleList count];
 }
 
-// 行数
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    TopicItemCell *cell = [tableView dequeueReusableCellWithIdentifier:@"TopicCell"];
     
-    return 3;
-}
-
-//配置特定行中的单元格
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    static NSString *ID = @"cell";
-    TopicTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:ID];
     if (!cell) {
-        //单元格样式设置为UITableViewCellStyleDefault
-        cell = [[TopicTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ID];
-        cell.avatarImageView.image = [UIImage imageNamed:@"text2"];
-        
-        cell.descLabel.text = @"哈哈哈哈哈哈哈啊哈哈哈哈啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊";
-        UIFont *descTextFont = systemFont(14);
-        CGSize size = CGSizeMake(0, 0);
-        if (cell.descLabel.text != nil) {
-            NSAttributedString *attributedText = [[NSAttributedString alloc] initWithString:cell.descLabel.text
-                                                                                 attributes:@{NSFontAttributeName: descTextFont}];
-            CGRect rect = [attributedText boundingRectWithSize:(CGSize){SCREEN_WIDTH - 108, CGFLOAT_MAX}
-                                                       options:NSStringDrawingUsesLineFragmentOrigin
-                                                       context:nil];
-            size = rect.size;
-            self.textHeight = size.height;
-            cell.descLabel.frame = rect;
-        }
-        
-        cell.nameLabel.text = @"这是名字";
-        cell.levelLabel.text = @"LV 10";
-        cell.timeLabel.text = @"11:10";
-        [cell.locBtn.titleLabel setText:@"大连市"];
-        [cell.likeCountBtn.titleLabel setText:@"100"];
+        cell = [[TopicItemCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"TopicCell"];
+        cell.circleItem = self.circleArr.circleList[indexPath.row];
+        [cell setCircleItem:self.circleArr.circleList[indexPath.row]];
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
     return cell;
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSString *text = @"哈哈哈哈哈哈哈啊哈哈哈哈啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊";
-    UIFont *descTextFont = systemFont(14);
-    CGSize size = CGSizeMake(0, 0);
-        NSAttributedString *attributedText = [[NSAttributedString alloc] initWithString:text
-                                                                             attributes:@{NSFontAttributeName: descTextFont}];
-        CGRect rect = [attributedText boundingRectWithSize:(CGSize){SCREEN_WIDTH - 108, CGFLOAT_MAX}
-                                                   options:NSStringDrawingUsesLineFragmentOrigin
-                                                   context:nil];
-        size = rect.size;
-    CGFloat imageheght = (SCREEN_WIDTH - 108 - 40)/3;
-    CGFloat height = 20 + 20 + 16 + 20 + size.height + imageheght + 5 + 18 + 5 + 10+20;
-    return height;
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    CircleItem *item = self.circleArr.circleList[indexPath.row];
+    YYTextContainer *container2 = [YYTextContainer containerWithSize:CGSizeMake(LayoutWidth, CGFLOAT_MAX)];
     
+    NSMutableAttributedString *attributeString2 = [[NSMutableAttributedString alloc] initWithString:item.content attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:14], NSForegroundColorAttributeName:__RGB_75,NSKernAttributeName:@1.5f}];
+    
+    NSMutableParagraphStyle *paragraphStyle2 = [[NSMutableParagraphStyle alloc] init];
+    [paragraphStyle2 setLineSpacing:5.0];
+    [attributeString2 addAttribute:NSParagraphStyleAttributeName value:paragraphStyle2 range:NSMakeRange(0, [item.content length])];
+    
+    YYTextLayout *layout2 = [YYTextLayout layoutWithContainer:container2 text:attributeString2];
+    
+    CGFloat contentHeight = layout2.textBoundingSize.height;
+    
+    CGFloat collectionHeight = 0;
+    
+    UIEdgeInsets edgeInset = UIEdgeInsetsMake(0, 0, 0, 0);
+    
+    CGFloat numberInLine = floor((item.photoUrl.count - 1)/3.0) + 1;
+    CGFloat numberInRow = 0.0;
+    switch (item.photoUrl.count) {
+        case 1:numberInRow = 1;
+            break;
+        case 2:numberInRow = 2;
+            break;
+        case 3:numberInRow = 3;
+            break;
+        case 4:numberInRow = 2;
+            break;
+        case 5:
+        case 6:
+        case 7:
+        case 8:
+        case 9:numberInRow = 3;
+            break;
+        default:
+            break;
+    }
+    
+    CGFloat itemWidth;
+    if (item.photoUrl.count == 1)
+        itemWidth = LayoutWidth - edgeInset.left - edgeInset.right;
+    else
+        itemWidth = (LayoutWidth - edgeInset.left - edgeInset.right - (numberInRow-1)*4)/numberInRow;
+    
+    collectionHeight = floor(itemWidth + edgeInset.top + edgeInset.bottom + (numberInLine -1)*4);
+    
+    DLog(@"高度是%f和%f",contentHeight, collectionHeight);
+    
+    return contentHeight + collectionHeight + 100 + 18;
 }
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell=[tableView cellForRowAtIndexPath:indexPath];
-    [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
-    cell.selected = NO;
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+    return 0.0;
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+{
+    return nil;
 }
 
 @end

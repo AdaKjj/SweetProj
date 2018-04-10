@@ -32,9 +32,8 @@
     bgImageView.userInteractionEnabled = YES;
     [self.view addSubview:bgImageView];
     [bgImageView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.top.equalTo(0);
-        make.height.equalTo(self.view.height);
-        make.width.equalTo(self.view.width);
+        make.left.and.right.and.top.and.bottom.equalTo(0);
+
     }];
     
     [self configConfirm];
@@ -185,7 +184,6 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
     return 100;
-
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {

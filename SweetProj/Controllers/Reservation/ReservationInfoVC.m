@@ -40,8 +40,8 @@
     [self.view addSubview:bgImageView];
     [bgImageView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.top.equalTo(0);
-        make.height.equalTo(self.view.height);
-        make.width.equalTo(self.view.width);
+        make.height.equalTo(SCREEN_HEIGHT);
+        make.width.equalTo(SCREEN_WIDTH);
     }];
     
     _baseControl = [[UIControl alloc] initWithFrame:self.view.bounds];
@@ -114,7 +114,7 @@
     _timeTF.font = systemFont(15);
     [orderBg addSubview:_timeTF];
     [_timeTF mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.centerY.equalTo(timeLabel.centerY);
+        make.centerY.equalTo(timeLabel.mas_centerY);
         make.left.equalTo(timeLabel.mas_right).inset(25);
         make.right.equalTo(-45);
         make.height.equalTo(26);
@@ -148,7 +148,7 @@
     _countTF.font = systemFont(15);
     [orderBg addSubview:_countTF];
     [_countTF mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.centerY.equalTo(countLabel.centerY);
+        make.centerY.equalTo(countLabel.mas_centerY);
         make.left.equalTo(countLabel.mas_right).inset(25);
         make.right.equalTo(-45);
         make.height.equalTo(26);
@@ -177,7 +177,7 @@
     _nameTF.font = systemFont(15);
     [orderBg addSubview:_nameTF];
     [_nameTF mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.centerY.equalTo(nameLabel.centerY);
+        make.centerY.equalTo(nameLabel.mas_centerY);
         make.left.equalTo(nameLabel.mas_right).inset(25);
         make.right.equalTo(-45);
         make.height.equalTo(26);
@@ -205,7 +205,7 @@
     _telTF.font = systemFont(15);
     [orderBg addSubview:_telTF];
     [_telTF mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.centerY.equalTo(telLabel.centerY);
+        make.centerY.equalTo(telLabel.mas_centerY);
         make.left.equalTo(telLabel.mas_right).inset(25);
         make.right.equalTo(-45);
         make.height.equalTo(26);

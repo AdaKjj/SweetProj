@@ -7,7 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
-
+@class CircleModel;
 @interface TopicVC : UIViewController
+@property (nonatomic) CircleModel *circleArr;
+- (void)getCircleArr:(NSDictionary *)jsonDic;
 
 @end

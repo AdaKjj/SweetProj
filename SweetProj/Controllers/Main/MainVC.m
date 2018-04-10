@@ -78,21 +78,23 @@
     [_baseControl addTarget:self action:@selector(onTouchDismiss:) forControlEvents:UIControlEventTouchUpInside];
     
     [self startLocation];
-    [self setupSearchBar];
     
     [self configCollectionView];
     
 }
 
--(void)viewWillAppear:(BOOL)animated{
+- (void)viewWillAppear:(BOOL)animated{
     [self setupLoginBtn];
     [self.navigationController setNavigationBarHidden:NO];
+    [self.navigationController.navigationBar setHidden:NO];
     [self.tabBarController setHidesBottomBarWhenPushed:NO];
     self.navigationController.navigationBar.backgroundColor = [UIColor clearColor];
     
     self.navigationController.navigationBar.barTintColor = [UIColor clearColor];
     [self.navigationController.navigationBar setBackgroundImage:
-     [UIImage imageNamed:@"navBG.png"] forBarMetrics:UIBarMetricsDefault];
+    [UIImage imageNamed:@"navBG.png"] forBarMetrics:UIBarMetricsDefault];
+    
+    [self setupSearchBar];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -334,8 +336,6 @@
 }
 
 - (void)setupSearchBar {
-    
-    
     //搜索框
     UIView *leftView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, 35, 35)];
     leftView.backgroundColor = [UIColor clearColor];

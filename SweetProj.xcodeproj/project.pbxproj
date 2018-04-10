@@ -108,6 +108,11 @@
 		E72882AD1FCEB4240048AC54 /* topicSelected@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = E72882A71FCEB4230048AC54 /* topicSelected@3x.png */; };
 		E72882AE1FCEB4240048AC54 /* main@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = E72882A81FCEB4230048AC54 /* main@3x.png */; };
 		E72882AF1FCEB4240048AC54 /* mainSelected@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = E72882A91FCEB4230048AC54 /* mainSelected@3x.png */; };
+		E72C3471207C57A100A7B9E3 /* TopicItemCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E72C3470207C57A100A7B9E3 /* TopicItemCell.m */; };
+		E72C3473207C83FB00A7B9E3 /* 头像.png in Resources */ = {isa = PBXBuildFile; fileRef = E72C3472207C83FB00A7B9E3 /* 头像.png */; };
+		E72C3476207C8A6A00A7B9E3 /* circle_praise.png in Resources */ = {isa = PBXBuildFile; fileRef = E72C3474207C8A6900A7B9E3 /* circle_praise.png */; };
+		E72C3477207C8A6A00A7B9E3 /* circle_praiseSelected.png in Resources */ = {isa = PBXBuildFile; fileRef = E72C3475207C8A6A00A7B9E3 /* circle_praiseSelected.png */; };
+		E72C347A207C97D300A7B9E3 /* CircleManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E72C3479207C97D300A7B9E3 /* CircleManager.m */; };
 		E731F9C01FCDA0E100E57200 /* GetBackPwdManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E731F9BF1FCDA0E100E57200 /* GetBackPwdManager.m */; };
 		E7323ECF1FFDD7EE000F802B /* DOPDropDownMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = E7323ECD1FFDD7EE000F802B /* DOPDropDownMenu.m */; };
 		E7323ED01FFDD7EE000F802B /* DOPDropDownMenu-Enhanced.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E7323ECE1FFDD7EE000F802B /* DOPDropDownMenu-Enhanced.xcassets */; };
@@ -464,6 +469,13 @@
 		E72882A71FCEB4230048AC54 /* topicSelected@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "topicSelected@3x.png"; sourceTree = "<group>"; };
 		E72882A81FCEB4230048AC54 /* main@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "main@3x.png"; sourceTree = "<group>"; };
 		E72882A91FCEB4230048AC54 /* mainSelected@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "mainSelected@3x.png"; sourceTree = "<group>"; };
+		E72C346F207C57A100A7B9E3 /* TopicItemCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TopicItemCell.h; sourceTree = "<group>"; };
+		E72C3470207C57A100A7B9E3 /* TopicItemCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TopicItemCell.m; sourceTree = "<group>"; };
+		E72C3472207C83FB00A7B9E3 /* 头像.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "头像.png"; sourceTree = "<group>"; };
+		E72C3474207C8A6900A7B9E3 /* circle_praise.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = circle_praise.png; sourceTree = "<group>"; };
+		E72C3475207C8A6A00A7B9E3 /* circle_praiseSelected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = circle_praiseSelected.png; sourceTree = "<group>"; };
+		E72C3478207C97D300A7B9E3 /* CircleManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CircleManager.h; sourceTree = "<group>"; };
+		E72C3479207C97D300A7B9E3 /* CircleManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CircleManager.m; sourceTree = "<group>"; };
 		E731F9BE1FCDA0E100E57200 /* GetBackPwdManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GetBackPwdManager.h; sourceTree = "<group>"; };
 		E731F9BF1FCDA0E100E57200 /* GetBackPwdManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GetBackPwdManager.m; sourceTree = "<group>"; };
 		E7323ECC1FFDD7EE000F802B /* DOPDropDownMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DOPDropDownMenu.h; sourceTree = "<group>"; };
@@ -888,6 +900,8 @@
 		E71A4415200DA563005FA7F1 /* Circle */ = {
 			isa = PBXGroup;
 			children = (
+				E72C3474207C8A6900A7B9E3 /* circle_praise.png */,
+				E72C3475207C8A6A00A7B9E3 /* circle_praiseSelected.png */,
 				E71A4422200DB927005FA7F1 /* circle_loc.png */,
 				E71A4421200DB927005FA7F1 /* circle_love.png */,
 				E71A4420200DB927005FA7F1 /* circle_loveSelected.png */,
@@ -1095,6 +1109,7 @@
 		E7202DF21FC4098B00E78F4A /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				E72C3472207C83FB00A7B9E3 /* 头像.png */,
 				E7CDB471206247E1008683C5 /* navBG.png */,
 				E73891412058F1C30032A5C7 /* qrcodescan@3x.png */,
 				E73CA9EB2057D7D30022CB2F /* SearchIcon@2x.png */,
@@ -1580,6 +1595,8 @@
 				E7D9D7D21FEA4A12001F647A /* TopicTableViewCell.m */,
 				E7D9D7D41FEA56DB001F647A /* GetTopicArr.h */,
 				E7D9D7D51FEA56DB001F647A /* GetTopicArr.m */,
+				E72C346F207C57A100A7B9E3 /* TopicItemCell.h */,
+				E72C3470207C57A100A7B9E3 /* TopicItemCell.m */,
 			);
 			path = Circle;
 			sourceTree = "<group>";
@@ -1640,6 +1657,8 @@
 				E734425D207373B400DB3B46 /* MenuManager.m */,
 				E7344265207477AE00DB3B46 /* OSSManager.h */,
 				E7344266207477AE00DB3B46 /* OSSManager.m */,
+				E72C3478207C97D300A7B9E3 /* CircleManager.h */,
+				E72C3479207C97D300A7B9E3 /* CircleManager.m */,
 			);
 			path = Manager;
 			sourceTree = "<group>";
@@ -1766,6 +1785,7 @@
 				E73891352058F18A0032A5C7 /* w213@3x.png in Resources */,
 				E7202E131FC40BD400E78F4A /* qqPressed.png in Resources */,
 				E71A4423200DB927005FA7F1 /* circle_review.png in Resources */,
+				E72C3476207C8A6A00A7B9E3 /* circle_praise.png in Resources */,
 				E7335DA01FE90CBC0035AB35 /* setting@2x.png in Resources */,
 				E71A446F200DE7B0005FA7F1 /* shop_area.sqlite in Resources */,
 				E7202E1A1FC40BD400E78F4A /* backBarBtn@2x.png in Resources */,
@@ -1791,6 +1811,7 @@
 				E738913C2058F18A0032A5C7 /* w103@3x.png in Resources */,
 				E73891362058F18A0032A5C7 /* w404@3x.png in Resources */,
 				E7E2C3E4204D172200960112 /* btn_back@2x.png in Resources */,
+				E72C3473207C83FB00A7B9E3 /* 头像.png in Resources */,
 				E7D9D7C11FEA288A001F647A /* adtesttwo.png in Resources */,
 				E736C928203EA17500DA24E1 /* next_arrow_icon@2x.png in Resources */,
 				E7202E0E1FC40BD400E78F4A /* weibo.png in Resources */,
@@ -1846,6 +1867,7 @@
 				E738911B2058F18A0032A5C7 /* w207@3x.png in Resources */,
 				E738913D2058F18A0032A5C7 /* w100@3x.png in Resources */,
 				E73891112058F18A0032A5C7 /* w102@3x.png in Resources */,
+				E72C3477207C8A6A00A7B9E3 /* circle_praiseSelected.png in Resources */,
 				E73CA9E92057D6790022CB2F /* 定位@2x.png in Resources */,
 				E71A441A200DA563005FA7F1 /* circle_add.png in Resources */,
 				E7D9D7C01FEA288A001F647A /* adtestthree.png in Resources */,
@@ -2007,6 +2029,7 @@
 				E73CA9FC2057FD050022CB2F /* ShopDetailModel.m in Sources */,
 				E7202DA31FC3DB5E00E78F4A /* main.m in Sources */,
 				E7202DEB1FC4007F00E78F4A /* MASLayoutConstraint.m in Sources */,
+				E72C347A207C97D300A7B9E3 /* CircleManager.m in Sources */,
 				E73314C5204FC6BE00C852F6 /* DDMenuModel.m in Sources */,
 				E7D9D7D61FEA56DB001F647A /* GetTopicArr.m in Sources */,
 				E734425E207373B400DB3B46 /* MenuManager.m in Sources */,
@@ -2088,6 +2111,7 @@
 				E71A4468200DE7B0005FA7F1 /* JFAreaDataManager.m in Sources */,
 				E7D9E8AB207B64DC00D4A51D /* ConfirmTBCell.m in Sources */,
 				E71A446C200DE7B0005FA7F1 /* JFCityTableViewCell.m in Sources */,
+				E72C3471207C57A100A7B9E3 /* TopicItemCell.m in Sources */,
 				E7397F01203D569F005B2EB5 /* OrderModel.m in Sources */,
 				E728829B1FCEA8060048AC54 /* Global.m in Sources */,
 				E71A4467200DE7B0005FA7F1 /* JFLocation.m in Sources */,

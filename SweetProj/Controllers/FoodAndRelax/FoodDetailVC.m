@@ -378,7 +378,7 @@
     UIImageView *lineImageView = [[UIImageView alloc]initWithImage:lineImage];
     [self.scrollView addSubview:lineImageView];
     [lineImageView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(morePhotoImageView1.bottom).inset(35);
+        make.top.equalTo(morePhotoImageView1.mas_bottom).inset(35);
         make.left.equalTo(BIANJU);
         make.height.equalTo(3);
         make.width.equalTo(SCREEN_WIDTH - BIANJU*2);
