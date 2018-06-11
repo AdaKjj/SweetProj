@@ -10,6 +10,8 @@
 
 @interface LoginVC : UIViewController
 
+@property (nonatomic) BOOL isFromCircle;
+
 - (void)receiveLoginRequest:(NSString *)requestResult;
 
 @end
