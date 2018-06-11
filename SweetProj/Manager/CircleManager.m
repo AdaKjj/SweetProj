@@ -20,7 +20,7 @@
     //第一步，创建url
     NSURL *url = [NSURL URLWithString:@"https://thethreestooges.cn:666/circle/circle/show"];
     NSString *sendString = nil;
-    sendString = [NSString stringWithFormat:@"type=%@&session=%@&start=0", type, [USERDEFAULTS objectForKey:@"Session"]];
+    sendString = [NSString stringWithFormat:@"type=朋友&session=%@&start=0", [USERDEFAULTS objectForKey:@"Session"]];
     //第二步，创建请求
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc]initWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:10];
     [request setHTTPMethod:@"POST"];

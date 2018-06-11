@@ -53,8 +53,8 @@
     [self.view addSubview:_bgImageView];
     [_bgImageView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.top.equalTo(0);
-        make.height.equalTo(self.view.height);
-        make.width.equalTo(self.view.width);
+        make.bottom.equalTo(0);
+        make.right.equalTo(0);
     }];
     
     //设置导航条
@@ -152,7 +152,7 @@
     [_fogetPwdBtn addTarget:self action:@selector(fogetPwdBtnClicked) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:_fogetPwdBtn];
     [_fogetPwdBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.right.equalTo(_pwdTF.right);
+        make.right.equalTo(_pwdTF.mas_right);
         make.top.equalTo(_pwdTF.mas_bottom).inset(16);
     }];
     
@@ -204,7 +204,7 @@
     [_weiboLoginBtn addTarget:self action:@selector(weiboLoginBtnClicked) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:_weiboLoginBtn];
     [_weiboLoginBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(_qqLoginBtn.right).inset(30);
+        make.left.equalTo(_qqLoginBtn.mas_right).inset(30);
         make.bottom.equalTo(-40);
         make.height.equalTo(25);
         make.width.equalTo(25);

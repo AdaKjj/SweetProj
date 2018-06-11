@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
+typedef void(^LogoutBlock)(BOOL isLogout);
 @interface PersonalSettingsVC : UIViewController
 
 @property (nonatomic) UIImageView   * avatarView;

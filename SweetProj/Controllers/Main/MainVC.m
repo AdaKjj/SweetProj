@@ -77,15 +77,19 @@
     _baseControl.backgroundColor = [UIColor clearColor];
     [_baseControl addTarget:self action:@selector(onTouchDismiss:) forControlEvents:UIControlEventTouchUpInside];
     
+    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+    [nc addObserver:self
+           selector:@selector(logoutNoti)
+               name:@"logout"
+             object:nil];
+    
     [self startLocation];
     
     [self configCollectionView];
-    
 }
 
 - (void)viewWillAppear:(BOOL)animated{
     [self setupLoginBtn];
-    [self.navigationController setNavigationBarHidden:NO];
     [self.navigationController.navigationBar setHidden:NO];
     [self.tabBarController setHidesBottomBarWhenPushed:NO];
     self.navigationController.navigationBar.backgroundColor = [UIColor clearColor];
@@ -102,12 +106,16 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (void)logoutNoti {
+    [self loginBtnClick];
+}
+
 - (void)setupLoginBtn {
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
     //BOOL isLogin = [userDefaults objectForKey:@"username"];
-    if (![userDefaults objectForKey:@"username"]) {
+    if (![userDefaults objectForKey:@"Session"]) {
         _loginBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        [_loginBtn setTitle:@"登陆" forState:UIControlStateNormal];
+        [_loginBtn setTitle:@"" forState:UIControlStateNormal];
         [_loginBtn setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
         [_loginBtn.titleLabel setFont:[UIFont systemFontOfSize:18]];
         [_loginBtn addTarget:self action:@selector(loginBtnClick) forControlEvents:UIControlEventTouchUpInside];
@@ -349,7 +357,7 @@
     _searchTF.textColor = [UIColor blackColor];
     _searchTF.backgroundColor = [UIColor whiteColor];
     _searchTF.font = systemFont(14);
-    _searchTF.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"搜索"
+    _searchTF.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"在Sweet上搜索"
                                                                      attributes:@{NSForegroundColorAttributeName:[UIColor lightGrayColor]}];
     _searchTF.layer.cornerRadius = 20;
     _searchTF.returnKeyType = UIReturnKeySearch;
@@ -509,6 +517,9 @@
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     if (collectionView.tag == 0) {
         return [self.advertisingModel.advertising count];
+    }
+    else if (collectionView.tag == 2) {
+        return self.foodModel.food.count;
     }
     return [self.recreationModel.recreation count] ;
 }

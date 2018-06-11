@@ -10,6 +10,7 @@
 #import "UIImage+Addition.h"
 #import "TableViewCellItem.h"
 #import "UITableViewCell+seperatorInset.h"
+#import "LoginVC.h"
 
 @interface PersonalSettingsVC () <UITableViewDelegate, UITableViewDataSource> {
     NSArray *_itemArr;
@@ -99,8 +100,6 @@
         make.top.left.equalTo(40);
         make.width.height.equalTo(80);
     }];
-    
-    
 }
 
 - (void)loadDataSource
@@ -110,11 +109,12 @@
     TableViewCellItem *nameCellItem = [[TableViewCellItem alloc] initWithTitle:@"昵称"];
     TableViewCellItem *accountCellItem = [[TableViewCellItem alloc] initWithTitle:@"用户ID"];
     TableViewCellItem *birthdayCellItem = [[TableViewCellItem alloc] initWithTitle:@"生日"];
+    TableViewCellItem *logoutCellItem = [[TableViewCellItem alloc] initWithTitle:@"退出登录"];
     
     NSArray *section1 = @[avatarCellItem];
     NSArray *section2 = @[nameCellItem, accountCellItem, birthdayCellItem];
-    
-    _itemArr = [NSArray arrayWithObjects:section1, section2, nil];
+    NSArray *section3 = @[logoutCellItem];
+    _itemArr = [NSArray arrayWithObjects:section1, section2, section3, nil];
 }
 
 // 退出登录
@@ -202,6 +202,10 @@
 //            cell.detailTextLabel.text = [TheUserModule.currentUser birthdayString];
 //        }
     }
+    else if ([cellItem.title isEqualToString:@"退出登录"]) {
+        cell.textLabel.textAlignment = NSTextAlignmentCenter;
+        cell.imageView.image = nil;
+    }
     
     return cell;
 }
@@ -217,6 +221,23 @@
 
 //TODO: 点击事件
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    
+    TableViewCellItem *cellItem = _itemArr[indexPath.section][indexPath.row];
+    DLog(@"点击 %@", cellItem.title);
+    if ([cellItem.title isEqualToString:@"退出登录"]) {
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:@"您确定要退出么" preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil];
+        UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"logout" object:self];
+            [USERDEFAULTS removeObjectForKey:@"Session"];
+            [self.navigationController popViewControllerAnimated:NO];
+            self.tabBarController.selectedIndex = 0;
+        }];
+        [alertController addAction:cancelAction];
+        [alertController addAction:okAction];
+        [self presentViewController:alertController animated:YES completion:nil];
+    }
     
 }
 

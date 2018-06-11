@@ -15,6 +15,8 @@
 #import "UITableView+FDTemplateLayoutCell.h"
 #import "CircleManager.h"
 #import <YYLabel.h>
+#import "LoginVC.h"
+#import "XWScanImage.h"
 
 #define UIScreenWidth   [UIScreen mainScreen].bounds.size.width
 #define UIScreenHeight  [UIScreen mainScreen].bounds.size.height
@@ -24,6 +26,8 @@
 
 @property (nonatomic) UIButton *addTopicBtn;
 @property (nonatomic) UIImageView *lineImageView;
+//@property (nonatomic) UIImageView *circleBgImageView;
+//@property (nonatomic) UIImageView *circleDetailImageView;
 
 @property (nonatomic) UIButton *friendsBtn;
 @property (nonatomic) UIButton *todayBtn;
@@ -48,14 +52,16 @@ static CGFloat margin = 20.f;
     self.edgesForExtendedLayout = UIRectEdgeNone;
     
     _addTopicBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    [_addTopicBtn setTitle:@"发布" forState:UIControlStateNormal];
+  //  [_addTopicBtn setTitle:@"发布" forState:UIControlStateNormal];
     [_addTopicBtn setImage:[UIImage imageNamed:@"头像"] forState:UIControlStateNormal];
-    [_addTopicBtn addTarget:self action:@selector(onTouchAddTopic) forControlEvents:UIControlEventTouchUpInside];
+   // [_addTopicBtn addTarget:self action:@selector(onTouchAddTopic) forControlEvents:UIControlEventTouchUpInside];
     [_addTopicBtn setTitleColor:SYSTEMCOLOR forState:UIControlStateNormal];
     [_addTopicBtn.titleLabel setFont:systemFont(14)];
     _addTopicBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
     _addTopicBtn.contentVerticalAlignment = UIControlContentVerticalAlignmentTop;
-    [_addTopicBtn layoutButtonWithEdgeInsetsStyle:ButtonEdgeInsetsStyleImageTop imageTitlespace:3];
+    _addTopicBtn.layer.masksToBounds = YES;
+    _addTopicBtn.layer.cornerRadius = 22;
+   // [_addTopicBtn layoutButtonWithEdgeInsetsStyle:ButtonEdgeInsetsStyleImageTop imageTitlespace:3];
     [self.view addSubview:_addTopicBtn];
     [_addTopicBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(-25);
@@ -75,7 +81,7 @@ static CGFloat margin = 20.f;
     [_friendsBtn.titleLabel setFont:systemFont(20)];
     [_friendsBtn setTitleColor:RGB(173, 173, 173) forState:UIControlStateNormal];
     [_friendsBtn setTitleColor:[UIColor blackColor] forState:UIControlStateSelected];
-    [_friendsBtn addTarget:self action:@selector(friendBtnClick) forControlEvents:UIControlEventTouchUpInside];
+    [_friendsBtn addTarget:self action:@selector(friendBtnClick:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:_friendsBtn];
     [_friendsBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(30);
@@ -130,12 +136,12 @@ static CGFloat margin = 20.f;
     self.photoTableView.tableHeaderView = nil;
     [self.photoTableView registerClass:[TopicItemCell class] forCellReuseIdentifier:@"TopicCell"];
     [self.photoTableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
-    [self.view addSubview: self.photoTableView];
-    [self.photoTableView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(_lineImageView.mas_bottom);
-        make.left.right.equalTo(0);
-        make.bottom.equalTo(0);
-    }];
+    //[self.view addSubview: self.photoTableView];
+//    [self.photoTableView mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.top.mas_equalTo(_lineImageView.mas_bottom);
+//        make.left.right.equalTo(0);
+//        make.bottom.equalTo(0);
+//    }];
     
     CircleManager *manager = [CircleManager new];
     manager.type = @"朋友";
@@ -147,13 +153,17 @@ static CGFloat margin = 20.f;
 - (void)viewWillAppear:(BOOL)animated {
     [self.navigationController setNavigationBarHidden:NO];
     self.view.backgroundColor = [UIColor whiteColor];
+    if (![USERDEFAULTS objectForKey:@"Session"]) {
+        LoginVC *loginVC = [[LoginVC alloc] init];
+        loginVC.hidesBottomBarWhenPushed = YES;
+        [self.navigationController pushViewController:loginVC animated:YES];
+    }
 }
 
-- (void)friendBtnClick {
+- (void)friendBtnClick:(id)sender {
     _friendsBtn.selected = YES;
     _todayBtn.selected = NO;
     _circleBtn.selected = NO;
-    
     
     CircleManager *manager = [CircleManager new];
     manager.type = @"朋友";
@@ -193,12 +203,12 @@ static CGFloat margin = 20.f;
         self.photoTableView.delegate = self;
         self.photoTableView.tableHeaderView = nil;
         [self.photoTableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
-        [self.view addSubview: self.photoTableView];
-        [self.photoTableView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(_lineImageView.mas_bottom);
-            make.left.right.equalTo(0);
-            make.bottom.equalTo(0);
-        }];
+//        [self.view addSubview: self.photoTableView];
+//        [self.photoTableView mas_makeConstraints:^(MASConstraintMaker *make) {
+//            make.top.equalTo(_lineImageView.mas_bottom);
+//            make.left.right.equalTo(0);
+//            make.bottom.equalTo(0);
+//        }];
     }
     else {
         [self.photoTableView reloadData];

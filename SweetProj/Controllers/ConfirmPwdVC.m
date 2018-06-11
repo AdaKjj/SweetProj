@@ -34,9 +34,7 @@
     _bgImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"userBg"]];
     [self.view addSubview:_bgImageView];
     [_bgImageView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.top.equalTo(0);
-        make.height.equalTo(self.view.height);
-        make.width.equalTo(self.view.width);
+        make.left.top.right.bottom.equalTo(0);
     }];
     
     //设置导航条

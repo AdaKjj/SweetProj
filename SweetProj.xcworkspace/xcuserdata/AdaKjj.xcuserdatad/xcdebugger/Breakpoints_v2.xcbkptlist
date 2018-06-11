@@ -20,11 +20,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "SweetProj/Controllers/Main/MainVC.m"
-            timestampString = "545052280.216922"
+            timestampString = "550409568.704072"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "244"
-            endingLineNumber = "244"
+            startingLineNumber = "252"
+            endingLineNumber = "252"
             landmarkName = "-configCollectionView"
             landmarkType = "7">
          </BreakpointContent>
@@ -36,7 +36,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "SweetProj/Manager/CircleManager.m"
-            timestampString = "545052280.217309"
+            timestampString = "545115736.597948"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "46"
@@ -52,7 +52,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "SweetProj/Controllers/Circle/TopicItemCell.m"
-            timestampString = "545052280.217573"
+            timestampString = "550409568.704886"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "58"
@@ -80,16 +80,16 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "SweetProj/Controllers/Circle/TopicVC.m"
-            timestampString = "545052280.218208"
+            filePath = "SweetProj/Controllers/FoodAndRelax/FoodDetailVC.m"
+            timestampString = "545115736.598767"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "237"
-            endingLineNumber = "237"
-            landmarkName = "-tableView:cellForRowAtIndexPath:"
+            startingLineNumber = "451"
+            endingLineNumber = "451"
+            landmarkName = "-setupScrollView"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

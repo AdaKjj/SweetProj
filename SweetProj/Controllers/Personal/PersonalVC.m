@@ -14,6 +14,7 @@
 
 #import "MyCommentVC.h"
 #import "MyCardViewController.h"
+#import "LoginVC.h"
 
 @interface PersonalVC ()<UICollectionViewDataSource,UICollectionViewDelegate,UICollectionViewDelegateFlowLayout> {
     NSArray *_moduleNameArr;
@@ -55,12 +56,18 @@
     _avatorImageView.layer.masksToBounds = YES;
     _avatorImageView.userInteractionEnabled = YES;
     _avatorImageView.layer.cornerRadius = 50.0;
+    _avatorImageView.contentMode = UIViewContentModeScaleAspectFill;
     //_avatorImageView.image = [UIImage imageNamed:@"text1"];
     [self.headerImageView addSubview:_avatorImageView];
     [_avatorImageView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerX.centerY.equalTo(0);
         make.height.width.equalTo(100);
     }];
+    
+    if ([USERDEFAULTS objectForKey:@"Session"]) {
+        _avatorImageView.image = [UIImage imageNamed:@"头像"];
+    }
+
     UITapGestureRecognizer *tapGestureRecognizer1 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(scanBigImageClick1:)];
     [_avatorImageView addGestureRecognizer:tapGestureRecognizer1];
     
@@ -78,19 +85,6 @@
     [self setModuleName];
 
     [self configCollectionView];
-    
-    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:@"您确定要退出么" preferredStyle:UIAlertControllerStyleAlert];
-    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil];
-//    UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^{
-//
-//    }];
-    UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        [USERDEFAULTS removeObjectForKey:@"username"];
-        [USERDEFAULTS removeObjectForKey:@"password"];
-    }];
-    [alertController addAction:cancelAction];
-    [alertController addAction:okAction];
-    [self presentViewController:alertController animated:YES completion:nil];
 }
 
 - (void)setModuleName {
@@ -133,7 +127,12 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated {
-     [self.navigationController setNavigationBarHidden:YES];
+    [self.navigationController setNavigationBarHidden:YES];
+    if (![USERDEFAULTS objectForKey:@"Session"]) {
+        LoginVC *loginVC = [[LoginVC alloc] init];
+        loginVC.hidesBottomBarWhenPushed = YES;
+        [self.navigationController pushViewController:loginVC animated:YES];
+    }
 }
 
 - (void)settingsButtonPressed {

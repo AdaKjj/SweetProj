@@ -17,12 +17,15 @@
 #import "ShopDetailManager.h"
 #import "UIImageView+WebCache.h"
 #import "TableViewController.h"
+#import "LoginVC.h"
 
 #define BIANJU  22
 #define FONT_SMALL systemFont(13)
 @interface FoodDetailVC ()<QMapViewDelegate, UIScrollViewDelegate>
 
 @property (nonatomic) UIScrollView *scrollView;
+
+@property (nonatomic) UIView *contentView;
 
 @property (nonatomic) UIImageView *appointmentToolBar;
 @property (nonatomic) UIButton *appointmentBtn;
@@ -445,8 +448,13 @@
 //        make.width.equalTo(60);
 //        make.height.equalTo(30);
 //    }];
-    
-    _scrollView.contentSize = CGSizeMake(SCREEN_WIDTH, 1170);
+    if ([self.name isEqualToString:@"老板娘烤肉店"]) {
+        _scrollView.contentSize = CGSizeMake(SCREEN_WIDTH, 1120);
+    }
+    else
+        _scrollView.contentSize = CGSizeMake(SCREEN_WIDTH, 1000);
+
+
     
     UITapGestureRecognizer *tapGestureRecognizer1 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(scanBigImageClick1:)];
     [morePhotoImageView1 addGestureRecognizer:tapGestureRecognizer1];
@@ -625,7 +633,6 @@
     [_mapView viewForAnnotation:[_annotations objectAtIndex:0]].selected = YES;
 }
 
-
 /**
  label添加字符串
 
@@ -664,8 +671,15 @@
 }
 
 - (void)appointmentBtnClicked {
-    SelectionVC *vc = [SelectionVC new];
-    [self presentViewController:vc animated:NO completion:nil];
+    if (![USERDEFAULTS objectForKey:@"Session"]) {
+        LoginVC *loginVC = [[LoginVC alloc] init];
+        loginVC.hidesBottomBarWhenPushed = YES;
+        [self.navigationController pushViewController:loginVC animated:YES];
+    }
+    else {
+        SelectionVC *vc = [SelectionVC new];
+        [self presentViewController:vc animated:NO completion:nil];
+    }
 }
 
 #pragma mark - MapDelegate

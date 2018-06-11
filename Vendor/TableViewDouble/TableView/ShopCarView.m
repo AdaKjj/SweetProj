@@ -43,7 +43,7 @@
         self.tableView.separatorInset = UIEdgeInsetsMake(0,15, 0, 15);// 设置端距，这里表示separator离左边和右边均80像素
         [self addSubview: self.tableView];
         [self.tableView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(70);
+            make.top.equalTo(90);
             make.left.equalTo(15);
             make.right.equalTo(-15);
             make.height.equalTo(300);
